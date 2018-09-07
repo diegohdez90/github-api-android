@@ -27,6 +27,9 @@ import io.realm.Realm;
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.REPOS;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USERS;
+import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_MAIN_GET_TOKEN;
+import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_OK_GET_TOKEN;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -99,10 +102,22 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.openGetToken:
                 Intent intent = new Intent(getApplicationContext(), GetToken.class);
-                startActivity(intent);
+                startActivityForResult(intent, RESULT_MAIN_GET_TOKEN);
                 return true;
                 default:
                     return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode) {
+            case RESULT_OK_GET_TOKEN:
+                Toast.makeText(getApplicationContext(),
+                        "Get a token",
+                        Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }
