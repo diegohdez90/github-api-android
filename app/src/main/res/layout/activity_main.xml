@@ -28,5 +28,5 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:onClick="getAccount"
-            android:text="Get Token"/>
+            android:text="Get Repos"/>
 </LinearLayout>
