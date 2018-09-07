@@ -12,8 +12,10 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.R;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
@@ -44,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.i(TAG, response.toString());
+                AppManager appManager = AppManager.getOurInstance();
+                try {
+                    appManager.setAccount(response.getString("login"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
