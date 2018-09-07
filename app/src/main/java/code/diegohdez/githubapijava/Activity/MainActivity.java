@@ -1,5 +1,6 @@
 package code.diegohdez.githubapijava.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
@@ -78,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.openGetToken:
-                Toast.makeText(getApplicationContext(), "Get Token", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), GetToken.class);
+                startActivity(intent);
                 return true;
                 default:
                     return super.onOptionsItemSelected(item);
