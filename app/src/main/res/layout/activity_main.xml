@@ -18,6 +18,8 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:hint="Username"
+            android:inputType="text"
+            android:imeOptions="actionGo"
             android:layout_marginBottom="32dp"
             />
         <Button
