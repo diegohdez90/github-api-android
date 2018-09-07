@@ -16,14 +16,14 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.R;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
-import static code.diegohdez.githubapijava.Utils.Constants.API.USERS;
+import static code.diegohdez.githubapijava.Utils.Constants.API.REPOS;
+import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_MAIN_GET_TOKEN;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,24 +40,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getAccount(View view) {
-        String username = account.getText().toString();
+        final String username = account.getText().toString();
         ANRequest request = AndroidNetworking
-                .get(BASE_URL + USERS + username)
+                .get(BASE_URL + REPOS + username)
                 .setPriority(Priority.HIGH)
                 .build();
         request.getAsJSONObject(new JSONObjectRequestListener() {
 
             @Override
             public void onResponse(JSONObject response) {
-                Log.i(TAG, response.toString());
                 AppManager appManager = AppManager.getOurInstance();
+                appManager.setAccount(username);
                 Intent intent = new Intent(getApplicationContext(), ReposActivity.class);
-                startActivity(intent);
-                try {
-                    appManager.setAccount(response.getString("login"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                startActivityForResult(intent, RESULT_MAIN_GET_TOKEN);
             }
 
             @Override
