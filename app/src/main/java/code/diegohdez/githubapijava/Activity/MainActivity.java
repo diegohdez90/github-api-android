@@ -9,21 +9,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
+import com.androidnetworking.common.ANResponse;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
-import org.json.JSONObject;
+import java.util.List;
 
 import code.diegohdez.githubapijava.Manager.AppManager;
+import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.R;
+import io.realm.Realm;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.REPOS;
-import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_MAIN_GET_TOKEN;
+import static code.diegohdez.githubapijava.Utils.Constants.API.USERS;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,26 +45,46 @@ public class MainActivity extends AppCompatActivity {
     public void getAccount(View view) {
         final String username = account.getText().toString();
         ANRequest request = AndroidNetworking
-                .get(BASE_URL + REPOS + username)
+                .get(BASE_URL + USERS + username + REPOS)
                 .setPriority(Priority.HIGH)
                 .build();
-        request.getAsJSONObject(new JSONObjectRequestListener() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-                AppManager appManager = AppManager.getOurInstance();
-                appManager.setAccount(username);
-                Intent intent = new Intent(getApplicationContext(), ReposActivity.class);
-                startActivityForResult(intent, RESULT_MAIN_GET_TOKEN);
-            }
-
-            @Override
-            public void onError(ANError anError) {
-                Log.i(TAG, anError.getErrorBody());
-                Log.i(TAG, anError.getErrorDetail());
-                Log.i(TAG, anError.getMessage());
-            }
-        });
+        Toast.makeText(
+                getApplicationContext(),
+                BASE_URL + USERS + username + REPOS,
+                Toast.LENGTH_SHORT
+        ).show();
+        Log.i(TAG, BASE_URL + USERS + username + REPOS);
+        ANResponse response = (ANResponse<Repo>) request.executeForObjectList(Repo.class);
+        if (response.isSuccess()) {
+            AppManager appManager = AppManager.getOurInstance();
+            appManager.setAccount(username);
+            final List<Repo> repos = (List<Repo>) response.getResult();
+            Toast.makeText(
+                    getApplicationContext(),
+                    username + " has " + repos.size() + " repositories",
+                    Toast.LENGTH_SHORT
+            ).show();
+            Realm realm = Realm.getDefaultInstance();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.insert(repos);
+                }
+            });
+            realm.close();
+            Intent intent = new Intent(getApplicationContext(), ReposActivity.class);
+            startActivity(intent);
+        } else {
+            ANError anError = response.getError();
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Error: " + anError.getErrorDetail() + "\n" +
+                            "Body: " + anError.getErrorBody() + "\n" +
+                            "Message: " + anError.getMessage() +  "\n" +
+                            "Code: " + anError.getErrorCode(),
+                    Toast.LENGTH_SHORT)
+            .show();
+        }
     }
 
     @Override
