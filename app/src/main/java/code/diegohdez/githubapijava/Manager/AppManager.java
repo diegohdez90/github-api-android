@@ -16,6 +16,8 @@ public class AppManager {
 
     private final String ACCOUNT = "ACCOUNT";
     private String account;
+    private final String TOKEN = "TOKEN";
+    private String token;
 
     public void setAccount (String account) {
         this.account = account;
@@ -28,6 +30,16 @@ public class AppManager {
 
     }
 
+    public void setToken (String token) {
+        this.token = token;
+        editor.putString(TOKEN, token);
+        editor.commit();
+    }
+
+    public String getToken() {
+        return token;
+    }
+
     public static void init (Context context) {
         ourInstance = new AppManager(context.getApplicationContext());
     }
@@ -36,9 +48,15 @@ public class AppManager {
         prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         editor = prefs.edit();
         account = prefs.getString(ACCOUNT, "");
+        token = prefs.getString(TOKEN, "");
     }
 
     public void resetAccount () {
         setAccount("");
+    }
+
+    public void logout () {
+        setAccount("");
+        setToken("");
     }
 }
