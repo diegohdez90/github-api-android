@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 Log.i(TAG, response.toString());
                 AppManager appManager = AppManager.getOurInstance();
+                Intent intent = new Intent(getApplicationContext(), ReposActivity.class);
+                startActivity(intent);
                 try {
                     appManager.setAccount(response.getString("login"));
                 } catch (JSONException e) {
