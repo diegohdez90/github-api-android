@@ -6,6 +6,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.jacksonandroidnetworking.JacksonParserFactory;
 
 import code.diegohdez.githubapijava.Manager.AppManager;
+import code.diegohdez.githubapijava.Migration.Migration;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -19,7 +20,8 @@ public class GithubApi extends Application{
         RealmConfiguration realmConfiguration = new RealmConfiguration
                 .Builder()
                 .name("github-api")
-                .schemaVersion(1)
+                .schemaVersion(2)
+                .migration(new Migration())
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
         AppManager.init(getApplicationContext());
