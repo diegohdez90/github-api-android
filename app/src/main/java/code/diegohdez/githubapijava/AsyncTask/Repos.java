@@ -56,7 +56,7 @@ public class Repos extends AsyncTask<String, Void, ANResponse<List<Repo>>> {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    realm.insert(repos);
+                    realm.insertOrUpdate(repos);
                 }
             });
             message = AppManager.getOurInstance().getAccount() + " repositories successfully";
