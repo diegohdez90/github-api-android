@@ -14,8 +14,16 @@ public class API {
                 .build();
     }
 
-    public static ANRequest getRepos (String url) {
-        ANRequest.GetRequestBuilder builder =  AndroidNetworking
+    public static ANRequest getRepos(String url, int page) {
+        ANRequest.GetRequestBuilder builder = AndroidNetworking
+                .get(url + "?page=" + page);
+        String token = AppManager.getOurInstance().getToken();
+        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        return builder.build();
+     }
+
+     public static ANRequest onRepoEvenListener (String url) {
+        ANRequest.GetRequestBuilder builder = AndroidNetworking
                 .get(url);
         String token = AppManager.getOurInstance().getToken();
         if (token.length() > 0) builder.addHeaders("Authorization", token);

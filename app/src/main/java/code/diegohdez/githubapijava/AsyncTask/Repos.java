@@ -40,7 +40,7 @@ public class Repos extends AsyncTask<String, Void, ANResponse<List<Repo>>> {
 
     @Override
     protected ANResponse<List<Repo>> doInBackground(String... urls) {
-        ANRequest request = API.getRepos(urls[0]);
+        ANRequest request = API.getRepos(urls[0], page);
         return (ANResponse<List<Repo>>) request.executeForObjectList(Repo.class);
     }
 
