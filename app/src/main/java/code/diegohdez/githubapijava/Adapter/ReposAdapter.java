@@ -1,12 +1,16 @@
 package code.diegohdez.githubapijava.Adapter;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -24,9 +28,10 @@ public class ReposAdapter extends RecyclerView.Adapter {
     private String account;
     private ReposActivity context;
 
-    public ReposAdapter (List<DataOfRepos> repos, String account) {
+    public ReposAdapter (List<DataOfRepos> repos, String account, ReposActivity context) {
         this.repos = repos;
         this.account = account;
+        this.context = context;
     }
 
     @NonNull
@@ -48,10 +53,34 @@ public class ReposAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolderItemRepo) {
-            DataOfRepos repo = repos.get(position - 1);
+            final DataOfRepos repo = repos.get(position - 1);
             ((ViewHolderItemRepo) holder).root.setTag(holder);
             ((ViewHolderItemRepo) holder).name.setText(repo.getName());
             ((ViewHolderItemRepo) holder).description.setText(repo.getDescription());
+            ((ViewHolderItemRepo) holder).repoModal.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    LayoutInflater inflater = context.getLayoutInflater();
+                    View view = inflater.inflate(R.layout.repo_details_modal, null);
+                    TextView watches = view.findViewById(R.id.watches);
+                    watches.setText(Integer.toString(repo.getWatchers()));
+                    TextView stars = view.findViewById(R.id.stars);
+                    stars.setText(Integer.toString(repo.getStars()));
+                    TextView forks = view.findViewById(R.id.forks);
+                    forks.setText(Integer.toString(repo.getForks()));
+                    builder.setView(view)
+                            .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+            });
         } else if(holder instanceof ViewHolderHeaderRepo) {
             ((ViewHolderHeaderRepo) holder).account.setText(account + " repos");
         } else {
@@ -75,11 +104,13 @@ public class ReposAdapter extends RecyclerView.Adapter {
 
         TextView name;
         TextView description;
+        ImageView repoModal;
         View root;
         public ViewHolderItemRepo(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.repo_name);
             description = itemView.findViewById(R.id.repo_description);
+            repoModal = itemView.findViewById(R.id.repo_details_modal);
             root = itemView;
         }
     }

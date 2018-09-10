@@ -35,7 +35,7 @@ public class ReposActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         RealmResults<Repo> repos = realm.where(Repo.class).equalTo("owner.login", account).findAll();
         ArrayList<DataOfRepos> list = DataOfRepos.createRepoList(repos);
-        adapter = new ReposAdapter(list, account);
+        adapter = new ReposAdapter(list, account, ReposActivity.this);
         recyclerView.setAdapter(adapter);
     }
 
