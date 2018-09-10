@@ -7,7 +7,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class Repo extends RealmObject{
     @PrimaryKey
-    private int id;
+    private long id;
     private String name;
     private String full_name;
     private String description;
@@ -18,11 +18,12 @@ public class Repo extends RealmObject{
     private Date created_at;
     private Date updated_at;
     private int subscribers_count;
+    private Owner owner;
 
     public Repo() {
     }
 
-    public Repo(int id,
+    public Repo(long id,
                 String name,
                 String full_name,
                 String description,
@@ -32,7 +33,8 @@ public class Repo extends RealmObject{
                 Date pushed_at,
                 Date created_at,
                 Date updated_at,
-                int subscribers_count) {
+                int subscribers_count,
+                Owner owner) {
         this.id = id;
         this.name = name;
         this.full_name = full_name;
@@ -44,13 +46,14 @@ public class Repo extends RealmObject{
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.subscribers_count = subscribers_count;
+        this.owner = owner;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -132,5 +135,13 @@ public class Repo extends RealmObject{
 
     public void setSubscribers_count(int subscribers_count) {
         this.subscribers_count = subscribers_count;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 }
