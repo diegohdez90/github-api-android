@@ -6,6 +6,14 @@ import com.androidnetworking.common.ANRequest;
 import code.diegohdez.githubapijava.Manager.AppManager;
 
 public class API {
+
+    public static ANRequest getToken (String url, String token) {
+        return AndroidNetworking
+                .get(url)
+                .addHeaders("Authorization", token)
+                .build();
+    }
+
     public static ANRequest getRepos (String url) {
         ANRequest.GetRequestBuilder builder =  AndroidNetworking
                 .get(url);

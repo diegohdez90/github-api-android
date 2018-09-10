@@ -3,6 +3,7 @@
     package="code.diegohdez.githubapijava">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".GithubApi"
@@ -19,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.GetToken" />
+        <activity android:name=".Activity.GetTokenActivity" />
         <activity android:name=".Activity.ReposActivity"></activity>
     </application>
 

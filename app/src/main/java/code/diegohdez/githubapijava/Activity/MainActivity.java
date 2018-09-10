@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.openGetToken:
-                Intent intent = new Intent(getApplicationContext(), GetToken.class);
+                Intent intent = new Intent(getApplicationContext(), GetTokenActivity.class);
                 startActivityForResult(intent, RESULT_MAIN_GET_TOKEN);
                 return true;
                 default:
