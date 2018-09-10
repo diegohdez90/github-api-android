@@ -80,13 +80,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void successRepos(MainActivity context, String message) {
-        Intent intent = new Intent(context, ReposActivity.class);
+    public static void successRepos(MainActivity context, String message, int status) {
         Toast.makeText(
                 context,
                 message,
                 Toast.LENGTH_SHORT)
                 .show();
-        context.startActivity(intent);
+        if (status == 200) {
+            Intent intent = new Intent(context, ReposActivity.class);
+            context.startActivity(intent);
+        }
     }
 }

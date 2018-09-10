@@ -47,6 +47,7 @@ public class Repos extends AsyncTask<String, Void, ANResponse<List<Repo>>> {
     @Override
     protected void onPostExecute(ANResponse<List<Repo>> response) {
         String message = "";
+        int status = 0;
         super.onPostExecute(response);
         if (response.isSuccess()) {
             final List<Repo> repos = (List<Repo>) response.getResult();
@@ -60,6 +61,7 @@ public class Repos extends AsyncTask<String, Void, ANResponse<List<Repo>>> {
                 }
             });
             message = AppManager.getOurInstance().getAccount() + " repositories successfully";
+            status = response.getOkHttpResponse().code();
         } else {
             AppManager.getOurInstance().resetAccount();
             ANError anError = response.getError();
@@ -67,8 +69,9 @@ public class Repos extends AsyncTask<String, Void, ANResponse<List<Repo>>> {
                     "Body: " + anError.getErrorBody() + "\n" +
                     "Message: " + anError.getMessage() + "\n" +
                     "Code: " + anError.getErrorCode();
+            status = anError.getErrorCode();
         }
         realm.close();
-        MainActivity.successRepos(context, message);
+        MainActivity.successRepos(context, message, status);
     }
 }
