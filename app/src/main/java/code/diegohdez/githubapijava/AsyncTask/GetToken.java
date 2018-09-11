@@ -38,10 +38,11 @@ public class GetToken extends AsyncTask<String, Void, ANResponse> {
     protected void onPostExecute(ANResponse response) {
         super.onPostExecute(response);
         String message = "";
+        int code = 0;
         if (response.isSuccess()) {
             Log.d(TAG, response.toString());
             Response anResponse = response.getOkHttpResponse();
-            int code = anResponse.code();
+            code = anResponse.code();
             if (code == 200) {
                 message = "Auth successfully";
             }
@@ -53,7 +54,8 @@ public class GetToken extends AsyncTask<String, Void, ANResponse> {
                     "Message: " + error.getMessage() + "\n" +
                     "Code: " + error.getErrorCode();
             Log.e(TAG, message);
+            code = error.getErrorCode();
         }
-        GetTokenActivity.responseMessage(context, message);
+        GetTokenActivity.responseMessage(context, message, code);
     }
 }
