@@ -1,5 +1,6 @@
 package code.diegohdez.githubapijava.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -12,6 +13,7 @@ import okhttp3.Credentials;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER;
+import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_OK_GET_TOKEN;
 
 public class GetTokenActivity extends AppCompatActivity {
 
@@ -45,11 +47,16 @@ public class GetTokenActivity extends AppCompatActivity {
         }
     }
 
-    public static void responseMessage(GetTokenActivity context, String message) {
+    public static void responseMessage(GetTokenActivity context, String message, int code) {
         Toast.makeText(
                 context,
                 message,
                 Toast.LENGTH_SHORT)
                 .show();
+        if (code == 200) {
+            Intent intent = new Intent();
+            context.setResult(RESULT_OK_GET_TOKEN, intent);
+            context.finish();
+        }
     }
 }
