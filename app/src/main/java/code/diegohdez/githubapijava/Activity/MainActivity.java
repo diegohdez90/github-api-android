@@ -1,5 +1,6 @@
 package code.diegohdez.githubapijava.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void successRepos(MainActivity context, String message, int status) {
+    public static void successRepos(Context context, String message, int status) {
         Toast.makeText(
                 context,
                 message,

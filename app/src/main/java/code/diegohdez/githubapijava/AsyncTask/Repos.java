@@ -1,5 +1,6 @@
 package code.diegohdez.githubapijava.AsyncTask;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.androidnetworking.common.ANRequest;
@@ -9,6 +10,7 @@ import com.androidnetworking.error.ANError;
 import java.util.List;
 
 import code.diegohdez.githubapijava.Activity.MainActivity;
+import code.diegohdez.githubapijava.Activity.ReposActivity;
 import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.Utils.Request.API;
@@ -17,7 +19,7 @@ import io.realm.Realm;
 public class Repos extends AsyncTask<String, Void, ANResponse<List<Repo>>> {
 
     private Realm realm;
-    private MainActivity context;
+    private Context context;
     API api;
     private int page = 1;
 
@@ -27,11 +29,12 @@ public class Repos extends AsyncTask<String, Void, ANResponse<List<Repo>>> {
         api = new API();
     }
 
-    public Repos(MainActivity context, int page) {
+    public Repos(ReposActivity context, int page) {
         realm = Realm.getDefaultInstance();
         this.context = context;
         this.page = page;
     }
+
 
     @Override
     protected void onPreExecute() {
@@ -72,6 +75,9 @@ public class Repos extends AsyncTask<String, Void, ANResponse<List<Repo>>> {
             status = anError.getErrorCode();
         }
         realm.close();
-        MainActivity.successRepos(context, message, status);
+        switch (context.getClass().getSimpleName()) {
+            case "MainActivity":
+                MainActivity.successRepos(context, message, status);
+        }
     }
 }
