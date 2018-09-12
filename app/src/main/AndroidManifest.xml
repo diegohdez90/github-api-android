@@ -20,11 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Activity.GetTokenActivity" />
+        <activity android:name=".Activity.GetTokenActivity" />
         <activity
             android:name=".Activity.ReposActivity"
             android:theme="@style/AppThemeCustom.NoActionBar" />
+        <activity android:name=".Activity.ReposDetailActivity"></activity>
     </application>
 
 </manifest>
