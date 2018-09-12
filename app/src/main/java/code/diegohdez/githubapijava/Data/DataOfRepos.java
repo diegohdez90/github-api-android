@@ -10,9 +10,10 @@ public class DataOfRepos {
 
     private String name;
     private String description;
-    private int stars;
-    private int watchers;
-    private int forks;
+    private long stars;
+    private long watchers;
+    private long forks;
+    private long subscribers;
 
     public DataOfRepos (ReposBuilder builder) {
         this.name = builder.getName();
@@ -20,6 +21,7 @@ public class DataOfRepos {
         this.stars = builder.getStars();
         this.watchers = builder.getWatchers();
         this.forks = builder.getForks();
+        this.subscribers = builder.getSubscribers();
     }
 
     public String getName() {
@@ -38,23 +40,23 @@ public class DataOfRepos {
         this.description = description;
     }
 
-    public int getStars() {
+    public long getStars() {
         return stars;
     }
 
-    public void setStars(int stars) {
+    public void setStars(long stars) {
         this.stars = stars;
     }
 
-    public int getWatchers() {
+    public long getWatchers() {
         return watchers;
     }
 
-    public void setWatchers(int watchers) {
+    public void setWatchers(long watchers) {
         this.watchers = watchers;
     }
 
-    public int getForks() {
+    public long getForks() {
         return forks;
     }
 
@@ -62,14 +64,23 @@ public class DataOfRepos {
         this.forks = forks;
     }
 
+    public void setSubscribers(long subscribers) {
+        this.subscribers = subscribers;
+    }
+
+    public long getSubscribers() {
+        return subscribers;
+    }
+
     public static ArrayList<DataOfRepos> createRepoList(List<Repo> repos) {
         ArrayList<DataOfRepos> list = new ArrayList<>();
         for (Repo repo: repos) {
             DataOfRepos item = new ReposBuilder(repo.getName())
                     .setDescription(repo.getDescription())
-                    .setWatchers(repo.getWatchers_count())
-                    .setStars(repo.getStargazers_count())
-                    .setForks(repo.getForks_count())
+                    .setWatchers(repo.getWatchers())
+                    .setStars(repo.getStars())
+                    .setForks(repo.getForks())
+                    .setSubscribers(repo.getSubscribers())
                     .build();
             list.add(item);
         }

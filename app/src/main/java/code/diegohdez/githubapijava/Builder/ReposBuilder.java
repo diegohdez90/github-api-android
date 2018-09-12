@@ -6,9 +6,10 @@ public class ReposBuilder {
 
     private String name;
     private String description;
-    private int watchers;
-    private int stars;
-    private int forks;
+    private long watchers;
+    private long stars;
+    private long forks;
+    private long subscribers;
 
     public ReposBuilder (String name) {
         this.name = name;
@@ -19,18 +20,23 @@ public class ReposBuilder {
         return this;
     }
 
-    public ReposBuilder setWatchers (int watchers) {
+    public ReposBuilder setWatchers (long watchers) {
         this.watchers = watchers;
         return this;
     }
 
-    public ReposBuilder setStars (int stars) {
+    public ReposBuilder setStars (long stars) {
         this.stars = stars;
         return this;
     }
 
-    public ReposBuilder setForks (int forks) {
+    public ReposBuilder setForks (long forks) {
         this.forks = forks;
+        return this;
+    }
+
+    public ReposBuilder setSubscribers (long subscribers) {
+        this.subscribers = subscribers;
         return this;
     }
 
@@ -46,15 +52,17 @@ public class ReposBuilder {
         return description;
     }
 
-    public int getWatchers() {
+    public long getWatchers() {
         return watchers;
     }
 
-    public int getStars() {
+    public long getStars() {
         return stars;
     }
 
-    public int getForks() {
+    public long getForks() {
         return forks;
     }
+
+    public long getSubscribers() { return subscribers; }
 }

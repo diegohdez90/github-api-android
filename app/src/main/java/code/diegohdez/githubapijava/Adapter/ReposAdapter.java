@@ -65,11 +65,11 @@ public class ReposAdapter extends RecyclerView.Adapter {
                     LayoutInflater inflater = context.getLayoutInflater();
                     View view = inflater.inflate(R.layout.repo_details_modal, null);
                     TextView watches = view.findViewById(R.id.watches);
-                    watches.setText(Integer.toString(repo.getWatchers()));
+                    watches.setText(Long.toString(repo.getWatchers()));
                     TextView stars = view.findViewById(R.id.stars);
-                    stars.setText(Integer.toString(repo.getStars()));
+                    stars.setText(Long.toString(repo.getStars()));
                     TextView forks = view.findViewById(R.id.forks);
-                    forks.setText(Integer.toString(repo.getForks()));
+                    forks.setText(Long.toString(repo.getForks()));
                     builder.setView(view)
                             .setPositiveButton("Close", new DialogInterface.OnClickListener() {
                                 @Override

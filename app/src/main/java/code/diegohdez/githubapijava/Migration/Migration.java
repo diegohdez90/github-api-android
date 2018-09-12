@@ -29,5 +29,22 @@ public class Migration implements RealmMigration {
                     .addRealmObjectField("owner", schema.get("Owner"));
             oldVersion++;
         }
+
+        if (oldVersion == 3) {
+            schema.get("Repo")
+                    .renameField("full_name", "fullName")
+                    .renameField("pushed_at", "pushedAt")
+                    .renameField("created_at", "createdAt")
+                    .renameField("updated_at", "updatedAt")
+                    .removeField("forks_count")
+                    .removeField("stargazers_count")
+                    .removeField("watchers_count")
+                    .removeField("subscribers_count")
+                    .addField("forks", long.class)
+                    .addField("stars", long.class)
+                    .addField("watchers", long.class)
+                    .addField("subscribers", long.class);
+            oldVersion++;
+        }
     }
 }

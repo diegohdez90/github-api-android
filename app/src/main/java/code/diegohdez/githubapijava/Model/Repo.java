@@ -1,5 +1,7 @@
 package code.diegohdez.githubapijava.Model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -9,15 +11,23 @@ public class Repo extends RealmObject{
     @PrimaryKey
     private long id;
     private String name;
-    private String full_name;
+    @SerializedName("full_name")
+    private String fullName;
     private String description;
-    private int forks_count;
-    private int stargazers_count;
-    private int watchers_count;
-    private Date pushed_at;
-    private Date created_at;
-    private Date updated_at;
-    private int subscribers_count;
+    @SerializedName("forks_count")
+    private long forks;
+    @SerializedName("stargazers_count")
+    private long stars;
+    @SerializedName("watchers_count")
+    private long watchers;
+    @SerializedName("pushed_at")
+    private Date pushedAt;
+    @SerializedName("created_at")
+    private Date createdAt;
+    @SerializedName("updated_at")
+    private Date updatedAt;
+    @SerializedName("subscribers_count")
+    private long subscribers;
     private Owner owner;
 
     public Repo() {
@@ -25,27 +35,27 @@ public class Repo extends RealmObject{
 
     public Repo(long id,
                 String name,
-                String full_name,
+                String fullName,
                 String description,
-                int forks_count,
-                int stargazers_count,
-                int watchers_count,
-                Date pushed_at,
-                Date created_at,
-                Date updated_at,
-                int subscribers_count,
+                long forks,
+                long stars,
+                long watchers,
+                Date pushedAt,
+                Date createdAt,
+                Date updatedAt,
+                long subscribers,
                 Owner owner) {
         this.id = id;
         this.name = name;
-        this.full_name = full_name;
+        this.fullName = fullName;
         this.description = description;
-        this.forks_count = forks_count;
-        this.stargazers_count = stargazers_count;
-        this.watchers_count = watchers_count;
-        this.pushed_at = pushed_at;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.subscribers_count = subscribers_count;
+        this.forks = forks;
+        this.stars = stars;
+        this.watchers = watchers;
+        this.pushedAt = pushedAt;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.subscribers = subscribers;
         this.owner = owner;
     }
 
@@ -65,12 +75,12 @@ public class Repo extends RealmObject{
         this.name = name;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getDescription() {
@@ -81,60 +91,60 @@ public class Repo extends RealmObject{
         this.description = description;
     }
 
-    public int getForks_count() {
-        return forks_count;
+    public long getForks() {
+        return forks;
     }
 
-    public void setForks_count(int forks_count) {
-        this.forks_count = forks_count;
+    public void setForks(long forks) {
+        this.forks = forks;
     }
 
-    public int getStargazers_count() {
-        return stargazers_count;
+    public long getStars() {
+        return stars;
     }
 
-    public void setStargazers_count(int stargazers_count) {
-        this.stargazers_count = stargazers_count;
+    public void setStars(long stars) {
+        this.stars = stars;
     }
 
-    public int getWatchers_count() {
-        return watchers_count;
+    public long getWatchers() {
+        return watchers;
     }
 
-    public void setWatchers_count(int watchers_count) {
-        this.watchers_count = watchers_count;
+    public void setWatchers(long watchers) {
+        this.watchers = watchers;
     }
 
-    public Date getPushed_at() {
-        return pushed_at;
+    public Date getPushedAt() {
+        return pushedAt;
     }
 
-    public void setPushed_at(Date pushed_at) {
-        this.pushed_at = pushed_at;
+    public void setPushedAt(Date pushedAt) {
+        this.pushedAt = pushedAt;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public Date getUpdated_at() {
-        return updated_at;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(Date updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public int getSubscribers_count() {
-        return subscribers_count;
+    public long getSubscribers() {
+        return subscribers;
     }
 
-    public void setSubscribers_count(int subscribers_count) {
-        this.subscribers_count = subscribers_count;
+    public void setSubscribers(long subscribers) {
+        this.subscribers = subscribers;
     }
 
     public Owner getOwner() {
