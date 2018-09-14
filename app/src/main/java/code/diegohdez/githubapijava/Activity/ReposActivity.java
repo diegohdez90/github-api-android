@@ -1,5 +1,7 @@
 package code.diegohdez.githubapijava.Activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -10,9 +12,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -45,6 +50,10 @@ public class ReposActivity extends AppCompatActivity {
     ReposAdapter adapter;
     private Menu menu;
 
+    AlertDialog.Builder builder;
+    LayoutInflater inflaterRepoDetails;
+    View viewRepoDetailsModal;
+
     private boolean isLoading = false;
     private boolean isLastPage = false;
     private int page = 1;
@@ -57,6 +66,9 @@ public class ReposActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        builder = new AlertDialog.Builder(this);
+        inflaterRepoDetails = this.getLayoutInflater();
+        viewRepoDetailsModal = inflaterRepoDetails.inflate(R.layout.repo_details_modal, null);
         realm = Realm.getDefaultInstance();
         appManager = AppManager.getOurInstance();
         account = appManager.getAccount();
@@ -76,6 +88,7 @@ public class ReposActivity extends AppCompatActivity {
             protected void loadRepos() {
                 isLoading = true;
                 page++;
+                AppManager.getOurInstance().setCurrentPage(page);
                 Repos repos = new Repos(ReposActivity.this, page);
                 repos.execute(API.getRepos(account));
             }
@@ -100,7 +113,14 @@ public class ReposActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        realm.delete(Repo.class);
+        AppManager.getOurInstance().initPager();
+        final RealmResults<Repo> rows = realm.where(Repo.class).equalTo("owner.login", account).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                rows.deleteAllFromRealm();
+            }
+        });
         realm.close();
     }
 
@@ -120,6 +140,12 @@ public class ReposActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        AppManager.getOurInstance().initPager();
     }
 
     @Override
@@ -195,5 +221,29 @@ public class ReposActivity extends AppCompatActivity {
         adapter.addAll(repos);
         if (page <= TOTAL_PAGES) adapter.addLoading();
         else isLastPage = true;
+    }
+
+    public void setRepoStatus(long watchers, long stars, long forks) {
+        TextView subscribersTextView = viewRepoDetailsModal.findViewById(R.id.watches);
+        subscribersTextView.setText(Long.toString(watchers));
+        TextView starsTextView = viewRepoDetailsModal.findViewById(R.id.stars);
+        starsTextView.setText(Long.toString(stars));
+        TextView forksTextView = viewRepoDetailsModal.findViewById(R.id.forks);
+        forksTextView.setText(Long.toString(forks));
+        builder.setView(viewRepoDetailsModal)
+                .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+    public void isSubscribed(boolean subscribed) {
+        TextView watchTextView = viewRepoDetailsModal.findViewById(R.id.watched_text);
+        if (subscribed) watchTextView.setText("Unwatch");
     }
 }
