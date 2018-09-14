@@ -1,7 +1,5 @@
 package code.diegohdez.githubapijava.Utils.Request;
 
-import android.util.Log;
-
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
 
@@ -38,5 +36,20 @@ public class API {
         String token = AppManager.getOurInstance().getToken();
         if (token.length() > 0) builder.addHeaders("Authorization", token);
         return builder.build();
-     }
+    }
+    public static ANRequest watchRepo (String url) {
+        ANRequest.PutRequestBuilder builder = AndroidNetworking
+                .put(url);
+        String token = AppManager.getOurInstance().getToken();
+        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        return builder.build();
+    }
+
+    public static ANRequest unWatchRepo (String url) {
+        ANRequest.DeleteRequestBuilder builder = AndroidNetworking
+                .delete(url);
+        String token = AppManager.getOurInstance().getToken();
+        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        return builder.build();
+    }
 }
