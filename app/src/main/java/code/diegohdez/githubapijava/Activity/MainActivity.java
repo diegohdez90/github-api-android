@@ -13,7 +13,10 @@ import android.widget.Toast;
 
 import code.diegohdez.githubapijava.AsyncTask.Repos;
 import code.diegohdez.githubapijava.Manager.AppManager;
+import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.R;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USERS;
@@ -41,6 +44,15 @@ public class MainActivity extends AppCompatActivity {
         if (username.length() > 0) {
             AppManager appManager = AppManager.getOurInstance();
             appManager.setAccount(username);
+            Realm realm = Realm.getDefaultInstance();
+            final RealmResults<Repo> rows = realm.where(Repo.class).equalTo("owner.login", username).findAll();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    rows.deleteAllFromRealm();
+                }
+            });
+            realm.close();
             Repos asyncRepos = new Repos(MainActivity.this);
             asyncRepos.execute(getRepos(username), BASE_URL + USERS + username);
         } else {
