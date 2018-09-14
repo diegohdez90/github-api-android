@@ -46,5 +46,10 @@ public class Migration implements RealmMigration {
                     .addField("subscribers", long.class);
             oldVersion++;
         }
+
+        if (oldVersion == 4) {
+            schema.get("Owner")
+                    .addField("repos", long.class);
+        }
     }
 }
