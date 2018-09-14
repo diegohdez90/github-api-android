@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import code.diegohdez.githubapijava.Activity.ReposActivity;
@@ -23,15 +24,18 @@ public class ReposAdapter extends RecyclerView.Adapter {
     private static final String TAG = ReposAdapter.class.getSimpleName();
     private static int HEADER = 0;
     private static int ITEM = 1;
+    private static int LOADER = 2;
 
     private List<DataOfRepos> repos;
     private String account;
     private ReposActivity context;
+    private boolean isLoading;
 
     public ReposAdapter (List<DataOfRepos> repos, String account, ReposActivity context) {
         this.repos = repos;
         this.account = account;
         this.context = context;
+        this.isLoading = false;
     }
 
     @NonNull
@@ -39,21 +43,20 @@ public class ReposAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        if (viewType == HEADER) {
-            View header = inflater.inflate(R.layout.repos_header, parent, false);
-            return new ViewHolderHeaderRepo(header);
-        } else if (viewType == ITEM) {
+        if (viewType == ITEM) {
             View repo = inflater.inflate(R.layout.item_repos, parent, false);
             return new ViewHolderItemRepo(repo);
-        } else {
+        } else if (viewType == LOADER) {
+            View loader = inflater.inflate(R.layout.repo_loader, parent, false);
+            return new ViewHolderLoaderRepo(loader);
+        } else
             throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
-        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolderItemRepo) {
-            final DataOfRepos repo = repos.get(position - 1);
+            final DataOfRepos repo = repos.get(position);
             ((ViewHolderItemRepo) holder).root.setTag(holder);
             ((ViewHolderItemRepo) holder).name.setText(repo.getName());
             ((ViewHolderItemRepo) holder).description.setText(repo.getDescription());
@@ -81,8 +84,10 @@ public class ReposAdapter extends RecyclerView.Adapter {
                     dialog.show();
                 }
             });
-        } else if(holder instanceof ViewHolderHeaderRepo) {
-            ((ViewHolderHeaderRepo) holder).account.setText(account + " repos");
+        } else if (holder instanceof ViewHolderLoaderRepo) {
+            /*
+            Nothing
+             */
         } else {
             Log.d(TAG, "no instance of view holder found");
         }
@@ -90,17 +95,47 @@ public class ReposAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return repos.size() + 1;
+        return repos.size();
+    }
+
+    public boolean isEmpty() {
+        return getItemCount() == 0;
+    }
+
+    public void add(DataOfRepos repo) {
+        repos.add(repo);
+        notifyItemInserted(repos.size() - 1);
+    }
+
+    public void addAll(List<DataOfRepos> repos) {
+        for (DataOfRepos repo : repos) add(repo);
+    }
+
+    public void clear () {
+        isLoading = false;
+        repos = new ArrayList<>();
+        notifyDataSetChanged();
+    }
+
+    public void addLoading () {
+        isLoading = true;
+        add(new DataOfRepos());
+    }
+
+    public void deleteLoading () {
+        isLoading = false;
+        int position = repos.size() - 1;
+        repos.remove(position);
+        notifyItemRemoved(position);
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == HEADER)
-            return HEADER;
+        if (position == repos.size() - 1 && isLoading) return LOADER;
         else return ITEM;
     }
 
-    public class ViewHolderItemRepo extends RecyclerView.ViewHolder{
+    private class ViewHolderItemRepo extends RecyclerView.ViewHolder{
 
         TextView name;
         TextView description;
@@ -115,7 +150,7 @@ public class ReposAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public class ViewHolderHeaderRepo extends RecyclerView.ViewHolder {
+    private class ViewHolderHeaderRepo extends RecyclerView.ViewHolder {
 
         TextView account;
         public ViewHolderHeaderRepo(View itemView) {
@@ -123,4 +158,12 @@ public class ReposAdapter extends RecyclerView.Adapter {
             account = itemView.findViewById(R.id.account_repos_header);
         }
     }
+
+    private class ViewHolderLoaderRepo extends RecyclerView.ViewHolder {
+
+        public ViewHolderLoaderRepo(View itemView) {
+            super(itemView);
+        }
+    }
+
 }
