@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -15,15 +16,21 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import code.diegohdez.githubapijava.Adapter.ReposAdapter;
+import code.diegohdez.githubapijava.AsyncTask.Repos;
 import code.diegohdez.githubapijava.Data.DataOfRepos;
 import code.diegohdez.githubapijava.Manager.AppManager;
+import code.diegohdez.githubapijava.Model.Owner;
 import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.R;
+import code.diegohdez.githubapijava.ScrollListener.ReposPaginationScrollListener;
+import code.diegohdez.githubapijava.Utils.Constants.API;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+import static code.diegohdez.githubapijava.Utils.Constants.API.PAGE_SIZE;
 import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_MAIN_GET_TOKEN;
 import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_OK_GET_TOKEN;
 
@@ -34,10 +41,14 @@ public class ReposActivity extends AppCompatActivity {
     private AppManager appManager;
     private String account;
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
+    private LinearLayoutManager layoutManager;
+    ReposAdapter adapter;
     private Menu menu;
 
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+    private int page = 1;
+    private int TOTAL_PAGES = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,19 +60,47 @@ public class ReposActivity extends AppCompatActivity {
         realm = Realm.getDefaultInstance();
         appManager = AppManager.getOurInstance();
         account = appManager.getAccount();
+        Owner owner = realm.where(Owner.class).equalTo("login", account).findFirst();
+        TOTAL_PAGES = (int) Math.ceil((double) owner.getRepos() / PAGE_SIZE);
         recyclerView = findViewById(R.id.reposList);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         RealmResults<Repo> repos = realm.where(Repo.class).equalTo("owner.login", account).findAll();
         ArrayList<DataOfRepos> list = DataOfRepos.createRepoList(repos);
-        adapter = new ReposAdapter(list, account, ReposActivity.this);
+        adapter = new ReposAdapter(list, account, this);
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new ReposPaginationScrollListener(layoutManager) {
+            @Override
+            protected void loadRepos() {
+                isLoading = true;
+                page++;
+                Repos repos = new Repos(ReposActivity.this, page);
+                repos.execute(API.getRepos(account));
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return TOTAL_PAGES;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return isLastPage;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        realm.delete(Repo.class);
         realm.close();
     }
 
@@ -146,5 +185,15 @@ public class ReposActivity extends AppCompatActivity {
                 onCreateOptionsMenu(menu);
                 break;
         }
+    }
+
+    public void successLoader(String message, int status, List<Repo> list) {
+        Realm realm = Realm.getDefaultInstance();
+        adapter.deleteLoading();
+        isLoading = false;
+        List<DataOfRepos> repos = DataOfRepos.createRepoList(list);
+        adapter.addAll(repos);
+        if (page <= TOTAL_PAGES) adapter.addLoading();
+        else isLastPage = true;
     }
 }
