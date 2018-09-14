@@ -1,9 +1,7 @@
 package code.diegohdez.githubapijava.Adapter;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,12 +11,27 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.ANRequest;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import code.diegohdez.githubapijava.Activity.ReposActivity;
 import code.diegohdez.githubapijava.Data.DataOfRepos;
+import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.R;
+
+import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
+import static code.diegohdez.githubapijava.Utils.Constants.API.STAR_REPO;
+import static code.diegohdez.githubapijava.Utils.Constants.API.USER;
+import static code.diegohdez.githubapijava.Utils.Constants.API.USER_REPOS;
+import static code.diegohdez.githubapijava.Utils.Constants.API.WATCH_REPO;
 
 public class ReposAdapter extends RecyclerView.Adapter {
     private static final String TAG = ReposAdapter.class.getSimpleName();
@@ -64,24 +77,63 @@ public class ReposAdapter extends RecyclerView.Adapter {
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    LayoutInflater inflater = context.getLayoutInflater();
-                    View view = inflater.inflate(R.layout.repo_details_modal, null);
-                    TextView watches = view.findViewById(R.id.watches);
-                    watches.setText(Long.toString(repo.getWatchers()));
-                    TextView stars = view.findViewById(R.id.stars);
-                    stars.setText(Long.toString(repo.getStars()));
-                    TextView forks = view.findViewById(R.id.forks);
-                    forks.setText(Long.toString(repo.getForks()));
-                    builder.setView(view)
-                            .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    context.setRepoStatus(
+                            repo.getWatchers(),
+                            repo.getStars(),
+                            repo.getForks());
+                    Log.i(TAG, BASE_URL + USER + STAR_REPO + "/" + account + "/" + repo.getName());
+                    ANRequest.GetRequestBuilder getWatcher = AndroidNetworking
+                            .get(BASE_URL + USER_REPOS + account + "/" + repo.getName() +  WATCH_REPO);
+                    ANRequest.GetRequestBuilder getStar = AndroidNetworking
+                            .get(BASE_URL + USER + STAR_REPO + "/" + account + "/" + repo.getName());
+                    String token = AppManager.getOurInstance().getToken();
+                    if (token.length() > 0) {
+                        getWatcher.addHeaders("Authorization", token);
+                        getStar.addHeaders("Authorization", token);
+                    }
+                    getWatcher
+                            .build()
+                            .getAsJSONObject(new JSONObjectRequestListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
+                                public void onResponse(JSONObject response) {
+                                    Log.i(TAG, response.toString());
+                                    boolean subscribed = false;
+                                    try {
+                                        subscribed = response.getBoolean("subscribed");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    context.isSubscribed(subscribed);
+                                }
+
+                                @Override
+                                public void onError(ANError anError) {
+                                    String message = "Error: " + anError.getErrorDetail() + "\n" +
+                                            "Body: " + anError.getErrorBody() + "\n" +
+                                            "Message: " + anError.getMessage() + "\n" +
+                                            "Code: " + anError.getErrorCode();
+                                    Log.e(TAG, message);
                                 }
                             });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
+
+                    getStar
+                            .addHeaders("Accept", "application/vnd.github.v3.star+json")
+                            .build()
+                            .getAsJSONObject(new JSONObjectRequestListener() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    Log.i(TAG, response.toString());
+                                }
+
+                                @Override
+                                public void onError(ANError anError) {
+                                    String message = "Error: " + anError.getErrorDetail() + "\n" +
+                                            "Body: " + anError.getErrorBody() + "\n" +
+                                            "Message: " + anError.getMessage() + "\n" +
+                                            "Code: " + anError.getErrorCode();
+                                    Log.e(TAG, message);
+                                }
+                            });
                 }
             });
         } else if (holder instanceof ViewHolderLoaderRepo) {
