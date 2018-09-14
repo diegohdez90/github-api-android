@@ -138,14 +138,16 @@ public class ReposActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         AppManager.getOurInstance().initPager();
-        final RealmResults<Repo> rows = realm.where(Repo.class).equalTo("owner.login", account).findAll();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                rows.deleteAllFromRealm();
-            }
-        });
-        realm.close();
+        if (!realm.isClosed()) {
+            final RealmResults<Repo> rows = realm.where(Repo.class).equalTo("owner.login", account).findAll();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    rows.deleteAllFromRealm();
+                }
+            });
+            realm.close();
+        }
     }
 
     @Override
