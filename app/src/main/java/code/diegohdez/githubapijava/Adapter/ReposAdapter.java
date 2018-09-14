@@ -92,51 +92,51 @@ public class ReposAdapter extends RecyclerView.Adapter {
                     if (token.length() > 0) {
                         getWatcher.addHeaders("Authorization", token);
                         getStar.addHeaders("Authorization", token);
-                    }
-                    getWatcher
-                            .build()
-                            .getAsJSONObject(new JSONObjectRequestListener() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    Log.i(TAG, response.toString());
-                                    boolean subscribed = false;
-                                    try {
-                                        subscribed = response.getBoolean("subscribed");
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+
+                        getWatcher.build()
+                                .getAsJSONObject(new JSONObjectRequestListener() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Log.i(TAG, response.toString());
+                                        boolean subscribed = false;
+                                        try {
+                                            subscribed = response.getBoolean("subscribed");
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        context.isSubscribed(subscribed);
                                     }
-                                    context.isSubscribed(subscribed);
-                                }
 
-                                @Override
-                                public void onError(ANError anError) {
-                                    if (anError.getErrorCode() == 404) context.isSubscribed(false);
-                                    String message = "Error: " + anError.getErrorDetail() + "\n" +
-                                            "Body: " + anError.getErrorBody() + "\n" +
-                                            "Message: " + anError.getMessage() + "\n" +
-                                            "Code: " + anError.getErrorCode();
-                                    Log.e(TAG, message);
-                                }
-                            });
+                                    @Override
+                                    public void onError(ANError anError) {
+                                        if (anError.getErrorCode() == 404) context.isSubscribed(false);
+                                        String message = "Error: " + anError.getErrorDetail() + "\n" +
+                                                "Body: " + anError.getErrorBody() + "\n" +
+                                                "Message: " + anError.getMessage() + "\n" +
+                                                "Code: " + anError.getErrorCode();
+                                        Log.e(TAG, message);
+                                    }
+                                });
 
-                    getStar
-                            .addHeaders("Accept", "application/vnd.github.v3.star+json")
-                            .build()
-                            .getAsJSONObject(new JSONObjectRequestListener() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    Log.i(TAG, response.toString());
-                                }
+                        getStar.addHeaders("Accept", "application/vnd.github.v3.star+json")
+                                .build()
+                                .getAsJSONObject(new JSONObjectRequestListener() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Log.i(TAG, response.toString());
+                                    }
 
-                                @Override
-                                public void onError(ANError anError) {
-                                    String message = "Error: " + anError.getErrorDetail() + "\n" +
-                                            "Body: " + anError.getErrorBody() + "\n" +
-                                            "Message: " + anError.getMessage() + "\n" +
-                                            "Code: " + anError.getErrorCode();
-                                    Log.e(TAG, message);
-                                }
-                            });
+                                    @Override
+                                    public void onError(ANError anError) {
+                                        String message = "Error: " + anError.getErrorDetail() + "\n" +
+                                                "Body: " + anError.getErrorBody() + "\n" +
+                                                "Message: " + anError.getMessage() + "\n" +
+                                                "Code: " + anError.getErrorCode();
+                                        Log.e(TAG, message);
+                                    }
+                                });
+
+                    }
                 }
             });
         } else if (holder instanceof ViewHolderLoaderRepo) {
