@@ -21,19 +21,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.ANRequest;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import code.diegohdez.githubapijava.Adapter.ReposAdapter;
 import code.diegohdez.githubapijava.AsyncTask.RepoInfo;
 import code.diegohdez.githubapijava.AsyncTask.Repos;
+import code.diegohdez.githubapijava.AsyncTask.WatchRepo;
 import code.diegohdez.githubapijava.Data.DataOfRepos;
 import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.Model.Owner;
@@ -62,6 +56,7 @@ public class ReposActivity extends AppCompatActivity {
     ReposAdapter adapter;
     private Menu menu;
 
+    AlertDialog dialog;
     AlertDialog.Builder builder;
     LayoutInflater inflaterRepoDetails;
     View viewRepoDetailsModal;
@@ -83,11 +78,26 @@ public class ReposActivity extends AppCompatActivity {
         builder = new AlertDialog.Builder(this);
         inflaterRepoDetails = this.getLayoutInflater();
         viewRepoDetailsModal = inflaterRepoDetails.inflate(R.layout.repo_details_modal, null);
+        builder.setView(viewRepoDetailsModal)
+            .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    isWatched = false;
+                }
+            });
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                isWatched = false;
+            }
+        });
+        dialog = builder.create();
         realm = Realm.getDefaultInstance();
         appManager = AppManager.getOurInstance();
         account = appManager.getAccount();
         Owner owner = realm.where(Owner.class).equalTo("login", account).findFirst();
-        TOTAL_PAGES = (int) Math.ceil((double) owner.getRepos() / PAGE_SIZE);
+        TOTAL_PAGES = (owner.getRepos() > 0) ? (int) Math.ceil((double) owner.getRepos() / PAGE_SIZE) : 0;
         recyclerView = findViewById(R.id.reposList);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
@@ -246,84 +256,14 @@ public class ReposActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                if (isWatched) {
-                    Log.i(TAG, "To delete: " + BASE_URL + USER_REPOS + account + "/" + repoName + WATCH_REPO);
-                    Toast.makeText(getApplicationContext(),
-                            "To delete: " + BASE_URL + USER_REPOS + account + "/" + repoName + WATCH_REPO,
-                            Toast.LENGTH_SHORT).show();
-                    ANRequest.DeleteRequestBuilder builder = AndroidNetworking
-                            .delete(BASE_URL + USER_REPOS + account + "/" + repoName + "/" + WATCH_REPO);
-                    String token = AppManager.getOurInstance().getToken();
-                    if (token.length() > 0)
-                        builder.addHeaders("Authorization", token);
-                    builder.build()
-                            .getAsJSONObject(new JSONObjectRequestListener() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    // /repos/:owner/:repo
-                                    Log.d(TAG, "onResponse delete: " + response);
-                                    RepoInfo updateInfo = new RepoInfo(ReposActivity.this);
-                                    updateInfo.execute(BASE_URL + USER_REPOS + account + "/" + repoName);
-                                    isSubscribed(false);
-                                }
-
-                                @Override
-                                public void onError(ANError anError) {
-                                    String message = "Delete: " + "\n" +
-                                            "Error: " + anError.getErrorDetail() + "\n" +
-                                            "Body: " + anError.getErrorBody() + "\n" +
-                                            "Message: " + anError.getMessage() + "\n" +
-                                            "Code: " + anError.getErrorCode();
-                                    Log.e(TAG, message);
-                                }
-                            });
-                } else {
-                    Log.i(TAG, "To watch: " + BASE_URL + USER_REPOS + account + "/" + repoName + WATCH_REPO);
-                    Toast.makeText(getApplicationContext(),
-                            "To watch: " + BASE_URL + USER_REPOS + account + "/" + repoName + WATCH_REPO,
-                            Toast.LENGTH_SHORT).show();
-                    ANRequest.PutRequestBuilder builder = AndroidNetworking
-                            .put(BASE_URL + USER_REPOS + account + "/" + repoName + WATCH_REPO);
-                    String token = AppManager.getOurInstance().getToken();
-                    if (token.length() > 0)
-                        builder.addHeaders("Authorization", token);
-                    builder.build()
-                            .getAsJSONObject(new JSONObjectRequestListener() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    // /repos/:owner/:repo
-                                    Log.d(TAG, "onResponse put: " + response);
-                                    RepoInfo updateInfo = new RepoInfo(ReposActivity.this);
-                                    updateInfo.execute(BASE_URL + USER_REPOS + account + "/" +repoName);
-                                    isSubscribed(true);
-                                }
-
-                                @Override
-                                public void onError(ANError anError) {
-                                    String message = "Put:" + "\n" +
-                                            "Error: " + anError.getErrorDetail() + "\n" +
-                                            "Body: " + anError.getErrorBody() + "\n" +
-                                            "Message: " + anError.getMessage() + "\n" +
-                                            "Code: " + anError.getErrorCode();
-                                    Log.e(TAG, message);
-                                }
-                            });
-                }
+                WatchRepo watchRepo = new WatchRepo(isWatched, ReposActivity.this, repoName);
+                watchRepo.execute(BASE_URL + USER_REPOS + account + "/" + repoName + WATCH_REPO);
             }
         });
         TextView starsTextView = viewRepoDetailsModal.findViewById(R.id.stars);
         starsTextView.setText(Long.toString(stars));
         TextView forksTextView = viewRepoDetailsModal.findViewById(R.id.forks);
         forksTextView.setText(Long.toString(forks));
-        builder.setView(viewRepoDetailsModal)
-                .setPositiveButton("Close", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        isWatched = false;
-                    }
-                });
-        AlertDialog dialog = builder.create();
         dialog.show();
 
     }
@@ -340,6 +280,12 @@ public class ReposActivity extends AppCompatActivity {
             watchTextView.setText("Watch");
             isWatched = false;
         }
+    }
+
+    public void updateRepo(boolean isWatched, String name) {
+        RepoInfo updateInfo = new RepoInfo(ReposActivity.this);
+        updateInfo.execute(BASE_URL + USER_REPOS + account + "/" + name);
+        isSubscribed(isWatched);
     }
 
     public void updateCounter(String name) {
