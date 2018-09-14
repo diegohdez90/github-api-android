@@ -24,6 +24,8 @@ public class DataOfRepos {
         this.subscribers = builder.getSubscribers();
     }
 
+    public DataOfRepos() { }
+
     public String getName() {
         return name;
     }
