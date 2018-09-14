@@ -284,7 +284,11 @@ public class ReposActivity extends AppCompatActivity {
         }
     }
 
-    public void updateRepo(boolean isWatched, String name) {
+    public void updateRepo(boolean isWatched, String name, String message) {
+        Toast.makeText(
+                getApplicationContext(),
+                message,
+                Toast.LENGTH_SHORT).show();
         RepoInfo updateInfo = new RepoInfo(ReposActivity.this);
         updateInfo.execute(BASE_URL + USER_REPOS + account + "/" + name);
         isSubscribed(isWatched);
