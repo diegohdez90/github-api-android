@@ -110,6 +110,7 @@ public class ReposAdapter extends RecyclerView.Adapter {
 
                                 @Override
                                 public void onError(ANError anError) {
+                                    if (anError.getErrorCode() == 404) context.isSubscribed(false);
                                     String message = "Error: " + anError.getErrorDetail() + "\n" +
                                             "Body: " + anError.getErrorBody() + "\n" +
                                             "Message: " + anError.getMessage() + "\n" +
