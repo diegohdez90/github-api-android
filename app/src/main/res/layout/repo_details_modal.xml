@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Repository Details"
@@ -31,6 +31,7 @@
             android:src="@mipmap/baseline_visibility_black_48" />
 
         <TextView
+            android:id="@+id/watched_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -62,6 +63,7 @@
             android:src="@mipmap/baseline_star_border_black_48" />
 
         <TextView
+            android:id="@+id/star_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
