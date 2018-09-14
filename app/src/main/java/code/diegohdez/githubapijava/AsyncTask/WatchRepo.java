@@ -38,7 +38,10 @@ public class WatchRepo extends AsyncTask<String, Void, ANResponse> {
     protected void onPostExecute(ANResponse response) {
         super.onPostExecute(response);
         if (response.isSuccess()) {
-            Log.d(TAG, "onResponse delete: " + response);
+            if(response.getOkHttpResponse().code() == 200) {
+                ((ReposActivity) context).updateRepo(true, name,  "Watch repo successfully");
+            } else if (response.getOkHttpResponse().code() == 204)
+                ((ReposActivity) context).updateRepo(false, name, "Unwatch repo successfully");
         } else {
             ANError anError = response.getError();
             String message = "Delete: " + "\n" +
@@ -48,6 +51,5 @@ public class WatchRepo extends AsyncTask<String, Void, ANResponse> {
                     "Code: " + anError.getErrorCode();
             Log.e(TAG, message);
         }
-        ((ReposActivity) context).updateRepo(!isWatched, name);
     }
 }
