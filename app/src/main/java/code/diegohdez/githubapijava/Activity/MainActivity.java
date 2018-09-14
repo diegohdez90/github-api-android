@@ -15,6 +15,8 @@ import code.diegohdez.githubapijava.AsyncTask.Repos;
 import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.R;
 
+import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
+import static code.diegohdez.githubapijava.Utils.Constants.API.USERS;
 import static code.diegohdez.githubapijava.Utils.Constants.API.getRepos;
 import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_MAIN_GET_TOKEN;
 import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_OK_GET_TOKEN;
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             AppManager appManager = AppManager.getOurInstance();
             appManager.setAccount(username);
             Repos asyncRepos = new Repos(MainActivity.this);
-            asyncRepos.execute(getRepos(username));
+            asyncRepos.execute(getRepos(username), BASE_URL + USERS + username);
         } else {
             Toast.makeText(
                     getApplicationContext(),
