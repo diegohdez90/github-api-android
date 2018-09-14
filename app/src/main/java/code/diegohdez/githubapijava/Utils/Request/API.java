@@ -1,5 +1,7 @@
 package code.diegohdez.githubapijava.Utils.Request;
 
+import android.util.Log;
+
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
 
@@ -28,9 +30,9 @@ public class API {
         String token = AppManager.getOurInstance().getToken();
         if (token.length() > 0) builder.addHeaders("Authorization", token);
         return builder.build();
-     }
+    }
 
-     public static ANRequest onRepoEvenListener (String url) {
+    public static ANRequest onRepoEvenListener (String url) {
         ANRequest.GetRequestBuilder builder = AndroidNetworking
                 .get(url);
         String token = AppManager.getOurInstance().getToken();
