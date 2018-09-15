@@ -37,7 +37,6 @@ import static code.diegohdez.githubapijava.Utils.Constants.API.WATCH_REPO;
 
 public class ReposAdapter extends RecyclerView.Adapter {
     private static final String TAG = ReposAdapter.class.getSimpleName();
-    private static int HEADER = 0;
     private static int ITEM = 1;
     private static int LOADER = 2;
 
