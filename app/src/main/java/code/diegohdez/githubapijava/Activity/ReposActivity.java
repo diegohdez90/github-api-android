@@ -159,10 +159,16 @@ public class ReposActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         AppManager.getOurInstance().initPager();
-        if (!realm.isClosed()) {
-            realm.delete(Repo.class);
-            realm.close();
-        }
+        if (realm.isClosed()) realm = Realm.getDefaultInstance();
+        final RealmResults<Repo> result = realm.where(Repo.class).equalTo(OWNER_LOGIN, account).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                result.deleteAllFromRealm();
+            }
+        });
+        AppManager.getOurInstance().resetAccount();
+        realm.close();
     }
 
     @Override
@@ -181,19 +187,6 @@ public class ReposActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        AppManager.getOurInstance().initPager();
-        final RealmResults<Repo> result = realm.where(Repo.class).equalTo(OWNER_LOGIN, account).findAll();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                result.deleteAllFromRealm();
-            }
-        });
     }
 
     @Override
@@ -262,7 +255,6 @@ public class ReposActivity extends AppCompatActivity {
     }
 
     public void successLoader(String message, int status, List<Repo> list) {
-        Realm realm = Realm.getDefaultInstance();
         adapter.deleteLoading();
         isLoading = false;
         List<DataOfRepos> repos = DataOfRepos.createRepoList(list);
