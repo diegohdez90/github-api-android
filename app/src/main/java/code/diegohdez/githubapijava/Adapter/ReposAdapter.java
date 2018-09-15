@@ -15,6 +15,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.OkHttpResponseListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +27,7 @@ import code.diegohdez.githubapijava.Activity.ReposActivity;
 import code.diegohdez.githubapijava.Data.DataOfRepos;
 import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.R;
+import okhttp3.Response;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.STAR_REPO;
@@ -120,14 +122,16 @@ public class ReposAdapter extends RecyclerView.Adapter {
 
                         getStar.addHeaders("Accept", "application/vnd.github.v3.star+json")
                                 .build()
-                                .getAsJSONObject(new JSONObjectRequestListener() {
+                                .getAsOkHttpResponse(new OkHttpResponseListener() {
                                     @Override
-                                    public void onResponse(JSONObject response) {
-                                        Log.i(TAG, response.toString());
+                                    public void onResponse(Response response) {
+                                        if (response.code() == 204) context.isStarred(true);
+                                        else  if (response.code() == 404) context.isStarred(false);
                                     }
 
                                     @Override
                                     public void onError(ANError anError) {
+                                        if (anError.getErrorCode() == 404) context.isStarred(false);
                                         String message = "Error: " + anError.getErrorDetail() + "\n" +
                                                 "Body: " + anError.getErrorBody() + "\n" +
                                                 "Message: " + anError.getMessage() + "\n" +
@@ -135,7 +139,6 @@ public class ReposAdapter extends RecyclerView.Adapter {
                                         Log.e(TAG, message);
                                     }
                                 });
-
                     }
                 }
             });
