@@ -77,7 +77,8 @@ public class DataOfRepos {
     public static ArrayList<DataOfRepos> createRepoList(List<Repo> repos) {
         ArrayList<DataOfRepos> list = new ArrayList<>();
         for (Repo repo: repos) {
-            DataOfRepos item = new ReposBuilder(repo.getName())
+            DataOfRepos item = new ReposBuilder(repo.getId())
+                    .setName(repo.getName())
                     .setDescription(repo.getDescription())
                     .setWatchers(repo.getWatchers())
                     .setStars(repo.getStars())

@@ -4,6 +4,7 @@ import code.diegohdez.githubapijava.Data.DataOfRepos;
 
 public class ReposBuilder {
 
+    private long id;
     private String name;
     private String description;
     private long watchers;
@@ -11,8 +12,13 @@ public class ReposBuilder {
     private long forks;
     private long subscribers;
 
-    public ReposBuilder (String name) {
+    public ReposBuilder (long id) {
+        this.id = id;
+    }
+
+    public ReposBuilder setName(String name) {
         this.name = name;
+        return this;
     }
 
     public ReposBuilder setDescription (String description) {
@@ -43,6 +49,10 @@ public class ReposBuilder {
     public DataOfRepos build(){
         return new DataOfRepos(this);
     }
+
+    public void setId(long id) { this.id = id; }
+
+    public long getId() { return id; }
 
     public String getName() {
         return name;
