@@ -52,4 +52,20 @@ public class API {
         if (token.length() > 0) builder.addHeaders("Authorization", token);
         return builder.build();
     }
+
+    public static ANRequest starRepo (String url) {
+        ANRequest.PutRequestBuilder builder = AndroidNetworking
+                .put(url);
+        String token = AppManager.getOurInstance().getToken();
+        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        return builder.build();
+    }
+
+    public static ANRequest unStarRepo (String url) {
+        ANRequest.DeleteRequestBuilder builder = AndroidNetworking
+                .delete(url);
+        String token = AppManager.getOurInstance().getToken();
+        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        return builder.build();
+    }
 }
