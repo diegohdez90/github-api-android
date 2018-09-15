@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import code.diegohdez.githubapijava.Adapter.ReposAdapter;
+import code.diegohdez.githubapijava.AsyncTask.ForkRepo;
 import code.diegohdez.githubapijava.AsyncTask.RepoInfo;
 import code.diegohdez.githubapijava.AsyncTask.Repos;
 import code.diegohdez.githubapijava.AsyncTask.StarRepo;
@@ -40,6 +41,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
+import static code.diegohdez.githubapijava.Utils.Constants.API.FORK_REPO;
 import static code.diegohdez.githubapijava.Utils.Constants.API.PAGE_SIZE;
 import static code.diegohdez.githubapijava.Utils.Constants.API.STAR_REPO;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER;
@@ -147,13 +149,7 @@ public class ReposActivity extends AppCompatActivity {
         super.onDestroy();
         AppManager.getOurInstance().initPager();
         if (!realm.isClosed()) {
-            final RealmResults<Repo> rows = realm.where(Repo.class).equalTo("owner.login", account).findAll();
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    rows.deleteAllFromRealm();
-                }
-            });
+            realm.delete(Repo.class);
             realm.close();
         }
     }
@@ -279,6 +275,14 @@ public class ReposActivity extends AppCompatActivity {
                 starRepo.execute(BASE_URL + USER + STAR_REPO + "/" + account + "/" + repoName);
             }
         });
+        ImageView forkRepo = viewRepoDetailsModal.findViewById(R.id.fork);
+        forkRepo.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ForkRepo forkRepo = new ForkRepo(ReposActivity.this, repoName);
+                forkRepo.execute(BASE_URL + USER_REPOS + account + "/" + repoName + FORK_REPO);
+            }
+        });
         TextView starsTextView = viewRepoDetailsModal.findViewById(R.id.stars);
         starsTextView.setText(Long.toString(stars));
         TextView forksTextView = viewRepoDetailsModal.findViewById(R.id.forks);
@@ -335,11 +339,22 @@ public class ReposActivity extends AppCompatActivity {
         }
     }
 
+    public void displayMessage(String message, String name) {
+        Toast.makeText(
+                getApplicationContext(),
+                message,
+                Toast.LENGTH_SHORT).show();
+        RepoInfo updateInfo = new RepoInfo(ReposActivity.this);
+        updateInfo.execute(BASE_URL + USER_REPOS + account + "/" +  name);
+    }
+
     public void updateCounter(String name) {
         Repo repo = realm.where(Repo.class).equalTo("name", name).findFirst();
         TextView watchTextView = viewRepoDetailsModal.findViewById(R.id.watches);
         watchTextView.setText(Long.toString(repo.getWatchers()));
         TextView starTextView = viewRepoDetailsModal.findViewById(R.id.stars);
         starTextView.setText(Long.toString(repo.getStars()));
+        TextView forkTextView = viewRepoDetailsModal.findViewById(R.id.forks);
+        forkTextView.setText(Long.toString(repo.getForks()));
     }
 }
