@@ -68,4 +68,12 @@ public class API {
         if (token.length() > 0) builder.addHeaders("Authorization", token);
         return builder.build();
     }
+
+    public static ANRequest forkRepo (String url) {
+        ANRequest.PostRequestBuilder builder = AndroidNetworking
+                .post(url);
+        String token = AppManager.getOurInstance().getToken();
+        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        return builder.build();
+    }
 }
