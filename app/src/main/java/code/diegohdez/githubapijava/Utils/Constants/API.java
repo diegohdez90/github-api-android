@@ -8,6 +8,7 @@ public class API {
     public static final String USER = "user";
     public static final String WATCH_REPO = "/subscription";
     public static final String STAR_REPO = "/starred";
+    public static final String FORK_REPO = "/forks";
 
     public static final int PAGE_SIZE = 30;
 
