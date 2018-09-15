@@ -50,6 +50,7 @@ import static code.diegohdez.githubapijava.Utils.Constants.API.UN_STAR;
 import static code.diegohdez.githubapijava.Utils.Constants.API.UN_WATCH;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER_REPOS;
+import static code.diegohdez.githubapijava.Utils.Constants.API.WATCH;
 import static code.diegohdez.githubapijava.Utils.Constants.API.WATCH_REPO;
 import static code.diegohdez.githubapijava.Utils.Constants.Fields.LOGIN;
 import static code.diegohdez.githubapijava.Utils.Constants.Fields.OWNER_LOGIN;
@@ -310,7 +311,7 @@ public class ReposActivity extends AppCompatActivity {
             isWatched = true;
         } else {
             watchRepo.setImageResource(R.mipmap.baseline_visibility_black_48);
-            watchTextView.setText(WATCH_REPO);
+            watchTextView.setText(WATCH);
             isWatched = false;
         }
     }
