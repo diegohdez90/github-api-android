@@ -14,7 +14,6 @@ import android.widget.Toast;
 import code.diegohdez.githubapijava.AsyncTask.Repos;
 import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.R;
-import io.realm.Realm;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USERS;
@@ -33,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         account = findViewById(R.id.account);
     }
 
@@ -42,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         if (username.length() > 0) {
             AppManager appManager = AppManager.getOurInstance();
             appManager.setAccount(username);
-            Realm realm = Realm.getDefaultInstance();
             Repos asyncRepos = new Repos(MainActivity.this);
             asyncRepos.execute(getRepos(username), BASE_URL + USERS + username);
         } else {
