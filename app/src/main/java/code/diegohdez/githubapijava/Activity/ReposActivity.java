@@ -37,16 +37,23 @@ import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.R;
 import code.diegohdez.githubapijava.ScrollListener.ReposPaginationScrollListener;
 import code.diegohdez.githubapijava.Utils.Constants.API;
+import code.diegohdez.githubapijava.Utils.Constants.Dialog;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.FORK_REPO;
 import static code.diegohdez.githubapijava.Utils.Constants.API.PAGE_SIZE;
+import static code.diegohdez.githubapijava.Utils.Constants.API.STAR;
 import static code.diegohdez.githubapijava.Utils.Constants.API.STAR_REPO;
+import static code.diegohdez.githubapijava.Utils.Constants.API.UN_STAR;
+import static code.diegohdez.githubapijava.Utils.Constants.API.UN_WATCH;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER_REPOS;
 import static code.diegohdez.githubapijava.Utils.Constants.API.WATCH_REPO;
+import static code.diegohdez.githubapijava.Utils.Constants.Fields.LOGIN;
+import static code.diegohdez.githubapijava.Utils.Constants.Fields.OWNER_LOGIN;
+import static code.diegohdez.githubapijava.Utils.Constants.Fields.REPO_NAME;
 import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_MAIN_GET_TOKEN;
 import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_OK_GET_TOKEN;
 
@@ -85,7 +92,7 @@ public class ReposActivity extends AppCompatActivity {
         inflaterRepoDetails = this.getLayoutInflater();
         viewRepoDetailsModal = inflaterRepoDetails.inflate(R.layout.repo_details_modal, null);
         builder.setView(viewRepoDetailsModal)
-            .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            .setPositiveButton(Dialog.CLOSE_REPO_DETAIL_DIALOG, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -104,7 +111,7 @@ public class ReposActivity extends AppCompatActivity {
         realm = Realm.getDefaultInstance();
         appManager = AppManager.getOurInstance();
         account = appManager.getAccount();
-        Owner owner = realm.where(Owner.class).equalTo("login", account).findFirst();
+        Owner owner = realm.where(Owner.class).equalTo(LOGIN, account).findFirst();
         if (owner != null) {
             TOTAL_PAGES = (owner.getRepos() > 0) ? (int) Math.ceil((double) owner.getRepos() / PAGE_SIZE) : 0;
         }
@@ -113,7 +120,7 @@ public class ReposActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        RealmResults<Repo> repos = realm.where(Repo.class).equalTo("owner.login", account).findAll();
+        RealmResults<Repo> repos = realm.where(Repo.class).equalTo(OWNER_LOGIN, account).findAll();
         ArrayList<DataOfRepos> list = DataOfRepos.createRepoList(repos);
         adapter = new ReposAdapter(list, account, this);
         recyclerView.setAdapter(adapter);
@@ -123,6 +130,10 @@ public class ReposActivity extends AppCompatActivity {
                 isLoading = true;
                 page++;
                 AppManager.getOurInstance().setCurrentPage(page);
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Get repos for page: " + page,
+                        Toast.LENGTH_SHORT).show();
                 Repos repos = new Repos(ReposActivity.this, page);
                 repos.execute(API.getRepos(account));
             }
@@ -176,6 +187,13 @@ public class ReposActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         AppManager.getOurInstance().initPager();
+        final RealmResults<Repo> result = realm.where(Repo.class).equalTo(OWNER_LOGIN, account).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                result.deleteAllFromRealm();
+            }
+        });
     }
 
     @Override
@@ -296,11 +314,11 @@ public class ReposActivity extends AppCompatActivity {
         TextView watchTextView = viewRepoDetailsModal.findViewById(R.id.watched_text);
         if (subscribed) {
             watchRepo.setImageResource(R.mipmap.baseline_visibility_off_black_48);
-            watchTextView.setText("Unwatch");
+            watchTextView.setText(UN_WATCH);
             isWatched = true;
         } else {
             watchRepo.setImageResource(R.mipmap.baseline_visibility_black_48);
-            watchTextView.setText("Watch");
+            watchTextView.setText(WATCH_REPO);
             isWatched = false;
         }
     }
@@ -330,11 +348,11 @@ public class ReposActivity extends AppCompatActivity {
         TextView starred = viewRepoDetailsModal.findViewById(R.id.star_text);
         if (isStarred) {
             starRepo.setImageResource(R.mipmap.baseline_star_black_48);
-            starred.setText("Unstar");
+            starred.setText(UN_STAR);
             this.isStarred = true;
         } else {
             starRepo.setImageResource(R.mipmap.baseline_star_border_black_48);
-            starred.setText("Star");
+            starred.setText(STAR);
             this.isStarred = false;
         }
     }
@@ -349,7 +367,7 @@ public class ReposActivity extends AppCompatActivity {
     }
 
     public void updateCounter(String name) {
-        Repo repo = realm.where(Repo.class).equalTo("name", name).findFirst();
+        Repo repo = realm.where(Repo.class).equalTo(REPO_NAME, name).findFirst();
         TextView watchTextView = viewRepoDetailsModal.findViewById(R.id.watches);
         watchTextView.setText(Long.toString(repo.getWatchers()));
         TextView starTextView = viewRepoDetailsModal.findViewById(R.id.stars);
