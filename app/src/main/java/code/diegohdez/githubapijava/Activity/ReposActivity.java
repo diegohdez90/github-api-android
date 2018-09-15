@@ -27,6 +27,7 @@ import java.util.List;
 import code.diegohdez.githubapijava.Adapter.ReposAdapter;
 import code.diegohdez.githubapijava.AsyncTask.RepoInfo;
 import code.diegohdez.githubapijava.AsyncTask.Repos;
+import code.diegohdez.githubapijava.AsyncTask.StarRepo;
 import code.diegohdez.githubapijava.AsyncTask.WatchRepo;
 import code.diegohdez.githubapijava.Data.DataOfRepos;
 import code.diegohdez.githubapijava.Manager.AppManager;
@@ -40,6 +41,8 @@ import io.realm.RealmResults;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.PAGE_SIZE;
+import static code.diegohdez.githubapijava.Utils.Constants.API.STAR_REPO;
+import static code.diegohdez.githubapijava.Utils.Constants.API.USER;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER_REPOS;
 import static code.diegohdez.githubapijava.Utils.Constants.API.WATCH_REPO;
 import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_MAIN_GET_TOKEN;
@@ -62,6 +65,7 @@ public class ReposActivity extends AppCompatActivity {
     View viewRepoDetailsModal;
 
     private boolean isWatched = false;
+    private boolean isStarred = false;
 
     private boolean isLoading = false;
     private boolean isLastPage = false;
@@ -84,12 +88,14 @@ public class ReposActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     isWatched = false;
+                    isStarred = false;
                 }
             });
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 isWatched = false;
+                isStarred = false;
             }
         });
         dialog = builder.create();
@@ -97,7 +103,9 @@ public class ReposActivity extends AppCompatActivity {
         appManager = AppManager.getOurInstance();
         account = appManager.getAccount();
         Owner owner = realm.where(Owner.class).equalTo("login", account).findFirst();
-        TOTAL_PAGES = (owner.getRepos() > 0) ? (int) Math.ceil((double) owner.getRepos() / PAGE_SIZE) : 0;
+        if (owner != null) {
+            TOTAL_PAGES = (owner.getRepos() > 0) ? (int) Math.ceil((double) owner.getRepos() / PAGE_SIZE) : 0;
+        }
         recyclerView = findViewById(R.id.reposList);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
@@ -262,6 +270,15 @@ public class ReposActivity extends AppCompatActivity {
                 watchRepo.execute(BASE_URL + USER_REPOS + account + "/" + repoName + WATCH_REPO);
             }
         });
+        ImageView starRepo = viewRepoDetailsModal.findViewById(R.id.star);
+        starRepo.setOnClickListener( new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                StarRepo starRepo = new StarRepo(isStarred, ReposActivity.this, repoName);
+                starRepo.execute(BASE_URL + USER + STAR_REPO + "/" + account + "/" + repoName);
+            }
+        });
         TextView starsTextView = viewRepoDetailsModal.findViewById(R.id.stars);
         starsTextView.setText(Long.toString(stars));
         TextView forksTextView = viewRepoDetailsModal.findViewById(R.id.forks);
@@ -284,7 +301,7 @@ public class ReposActivity extends AppCompatActivity {
         }
     }
 
-    public void updateRepo(boolean isWatched, String name, String message) {
+    public void updateRepoAfterWatched(boolean isWatched, String name, String message) {
         Toast.makeText(
                 getApplicationContext(),
                 message,
@@ -294,9 +311,35 @@ public class ReposActivity extends AppCompatActivity {
         isSubscribed(isWatched);
     }
 
+    public void updateRepoAfterStarred(boolean isStarred, String name, String message) {
+        Toast.makeText(
+                getApplicationContext(),
+                message,
+                Toast.LENGTH_SHORT).show();
+        RepoInfo updateInfo = new RepoInfo(ReposActivity.this);
+        updateInfo.execute(BASE_URL + USER_REPOS + account + "/" +  name);
+        isStarred(isStarred);
+    }
+
+    public void isStarred(boolean isStarred) {
+        ImageView starRepo = viewRepoDetailsModal.findViewById(R.id.star);
+        TextView starred = viewRepoDetailsModal.findViewById(R.id.star_text);
+        if (isStarred) {
+            starRepo.setImageResource(R.mipmap.baseline_star_black_48);
+            starred.setText("Unstar");
+            this.isStarred = true;
+        } else {
+            starRepo.setImageResource(R.mipmap.baseline_star_border_black_48);
+            starred.setText("Star");
+            this.isStarred = false;
+        }
+    }
+
     public void updateCounter(String name) {
         Repo repo = realm.where(Repo.class).equalTo("name", name).findFirst();
         TextView watchTextView = viewRepoDetailsModal.findViewById(R.id.watches);
         watchTextView.setText(Long.toString(repo.getWatchers()));
+        TextView starTextView = viewRepoDetailsModal.findViewById(R.id.stars);
+        starTextView.setText(Long.toString(repo.getStars()));
     }
 }
