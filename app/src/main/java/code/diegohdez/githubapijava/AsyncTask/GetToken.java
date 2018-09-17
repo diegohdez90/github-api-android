@@ -12,6 +12,8 @@ import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.Utils.Request.API;
 import okhttp3.Response;
 
+import static code.diegohdez.githubapijava.Utils.Constants.API.AUTH_SUCCESS;
+
 public class GetToken extends AsyncTask<String, Void, ANResponse> {
 
     private static final String TAG = GetToken.class.getSimpleName();
@@ -43,7 +45,7 @@ public class GetToken extends AsyncTask<String, Void, ANResponse> {
             Log.d(TAG, response.toString());
             Response anResponse = response.getOkHttpResponse();
             code = anResponse.code();
-            if (code == 200) {
+            if (code == AUTH_SUCCESS) {
                 message = "Auth successfully";
             }
             AppManager.getOurInstance().setToken(token);

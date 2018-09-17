@@ -23,6 +23,7 @@ public class API {
     public static final String WATCH = "Watch";
     public static final String STAR = "Star";
 
+    public static final int AUTH_SUCCESS = 200;
     public static final int WATCH_REPO_SUCCESS = 200;
     public static final int UNWATCH_REPO_SUCCESS = 204;
     public static final int FORK_REPO_SUCCESS = 202;
