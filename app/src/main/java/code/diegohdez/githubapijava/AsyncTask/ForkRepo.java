@@ -10,6 +10,8 @@ import com.androidnetworking.error.ANError;
 import code.diegohdez.githubapijava.Activity.ReposActivity;
 import code.diegohdez.githubapijava.Utils.Request.API;
 
+import static code.diegohdez.githubapijava.Utils.Constants.API.FORK_REPO_SUCCESS;
+
 public class ForkRepo extends AsyncTask<String, Void, ANResponse> {
 
     private static final String TAG = ForkRepo.class.getSimpleName();
@@ -32,7 +34,7 @@ public class ForkRepo extends AsyncTask<String, Void, ANResponse> {
         super.onPostExecute(response);
         if (response.isSuccess()) {
             Log.i(TAG, "fork repo: " + response.getOkHttpResponse().code());
-            if (response.getOkHttpResponse().code() == 202) ((ReposActivity) context).displayMessage("Fork success", name);
+            if (response.getOkHttpResponse().code() == FORK_REPO_SUCCESS) ((ReposActivity) context).displayMessage("Fork success", name);
         } else {
             ANError anError = response.getError();
             String message = "Delete: " + "\n" +
