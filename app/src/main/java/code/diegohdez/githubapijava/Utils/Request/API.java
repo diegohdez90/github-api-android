@@ -5,6 +5,8 @@ import com.androidnetworking.common.ANRequest;
 
 import code.diegohdez.githubapijava.Manager.AppManager;
 
+import static code.diegohdez.githubapijava.Utils.Constants.API.ACCEPT;
+import static code.diegohdez.githubapijava.Utils.Constants.API.APPLICATION_VND_GITHUB;
 import static code.diegohdez.githubapijava.Utils.Constants.API.AUTHORIZATION;
 
 public class API {
@@ -82,7 +84,7 @@ public class API {
     public static ANRequest getIssues (String url) {
         ANRequest.GetRequestBuilder builder= AndroidNetworking
                 .get(url)
-                .addHeaders("Accept", "application/vnd.github.symmetra-preview+json");
+                .addHeaders(ACCEPT, APPLICATION_VND_GITHUB);
         String token = AppManager.getOurInstance().getToken();
         if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
         return builder.build();

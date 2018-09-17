@@ -12,7 +12,9 @@ public class API {
     public static final String FORK_REPO = "/forks";
 
     public static final String AUTHORIZATION = "Authorization";
+    public static final String ACCEPT = "Accept";
 
+    public static final String APPLICATION_VND_GITHUB = "application/vnd.github.symmetra-preview+json";
     public static final int PAGE_SIZE = 30;
 
     public static final String UN_WATCH = "Unwatch";
