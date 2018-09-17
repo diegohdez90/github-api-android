@@ -83,7 +83,7 @@ public class DataOfIssues {
                     .setNumber(issue.getNumber())
                     .setState(issue.getState())
                     .setUser(issue.getUser().getLogin())
-                    .setAssignee(issue.getAssignee().getLogin())
+                    .setAssignee(issue.getAssignee())
                     .setCreatedAt(issue.getCreatedAt())
                     .setUpdatedAt(issue.getUpdatedAt())
                     .setClosedAt(issue.getClosedAt())

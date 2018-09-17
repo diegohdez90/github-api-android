@@ -3,6 +3,7 @@ package code.diegohdez.githubapijava.Builder;
 import java.util.Date;
 
 import code.diegohdez.githubapijava.Data.DataOfIssues;
+import code.diegohdez.githubapijava.Model.Owner;
 
 public class IssuesBuilder {
     private long id;
@@ -45,13 +46,13 @@ public class IssuesBuilder {
         return this;
     }
 
-    public IssuesBuilder setAssignee(String assignee) {
-        this.assignee = assignee;
+    public IssuesBuilder setAssignee(Owner assignee) {
+        if (assignee != null) this.assignee = assignee.getLogin();
         return this;
     }
 
     public IssuesBuilder setClosedAt(Date closedAt) {
-        this.closedAt = closedAt;
+        if (closedAt != null) this.closedAt = closedAt;
         return this;
     }
 
