@@ -76,4 +76,13 @@ public class API {
         if (token.length() > 0) builder.addHeaders("Authorization", token);
         return builder.build();
     }
+
+    public static ANRequest getIssues (String url) {
+        ANRequest.GetRequestBuilder builder= AndroidNetworking
+                .get(url)
+                .addHeaders("Accept", "application/vnd.github.symmetra-preview+json");
+        String token = AppManager.getOurInstance().getToken();
+        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        return builder.build();
+    }
 }
