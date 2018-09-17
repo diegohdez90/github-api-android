@@ -5,6 +5,8 @@ import com.androidnetworking.common.ANRequest;
 
 import code.diegohdez.githubapijava.Manager.AppManager;
 
+import static code.diegohdez.githubapijava.Utils.Constants.API.AUTHORIZATION;
+
 public class API {
 
     public static ANRequest getToken (String url, String token) {
@@ -18,7 +20,7 @@ public class API {
         ANRequest.GetRequestBuilder builder = AndroidNetworking
                 .get(url);
         String token = AppManager.getOurInstance().getToken();
-        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
         return builder.build();
     }
 
@@ -26,7 +28,7 @@ public class API {
         ANRequest.GetRequestBuilder builder = AndroidNetworking
                 .get(url + "?page=" + page);
         String token = AppManager.getOurInstance().getToken();
-        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
         return builder.build();
     }
 
@@ -34,7 +36,7 @@ public class API {
         ANRequest.GetRequestBuilder builder = AndroidNetworking
                 .get(url);
         String token = AppManager.getOurInstance().getToken();
-        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
         return builder.build();
     }
     public static ANRequest watchRepo (String url) {
@@ -49,7 +51,7 @@ public class API {
         ANRequest.DeleteRequestBuilder builder = AndroidNetworking
                 .delete(url);
         String token = AppManager.getOurInstance().getToken();
-        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
         return builder.build();
     }
 
@@ -57,7 +59,7 @@ public class API {
         ANRequest.PutRequestBuilder builder = AndroidNetworking
                 .put(url);
         String token = AppManager.getOurInstance().getToken();
-        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
         return builder.build();
     }
 
@@ -65,7 +67,7 @@ public class API {
         ANRequest.DeleteRequestBuilder builder = AndroidNetworking
                 .delete(url);
         String token = AppManager.getOurInstance().getToken();
-        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
         return builder.build();
     }
 
@@ -73,7 +75,7 @@ public class API {
         ANRequest.PostRequestBuilder builder = AndroidNetworking
                 .post(url);
         String token = AppManager.getOurInstance().getToken();
-        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
         return builder.build();
     }
 
@@ -82,7 +84,7 @@ public class API {
                 .get(url)
                 .addHeaders("Accept", "application/vnd.github.symmetra-preview+json");
         String token = AppManager.getOurInstance().getToken();
-        if (token.length() > 0) builder.addHeaders("Authorization", token);
+        if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
         return builder.build();
     }
 }
