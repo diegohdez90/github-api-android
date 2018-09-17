@@ -19,5 +19,12 @@ public class Fields {
     public static final String PUSHED_AT = "pushedAt";
     public static final String UPDATED_AT = "updatedAt";
     public static final String REPOS = "repos";
-
+    public static final String TITLE = "title";
+    public static final String DESCRIPTION = "description";
+    public static final String STATE = "state";
+    public static final String NUMBER = "number";
+    public static final String USER = "user";
+    public static final String ASSIGNEE = "assignee";
+    public static final String CLOSED_AT = "closedAt";
+    public static final String ISSUES = "issues";
 }
