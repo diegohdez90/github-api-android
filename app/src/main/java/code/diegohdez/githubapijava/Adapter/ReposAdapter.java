@@ -2,6 +2,7 @@ package code.diegohdez.githubapijava.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,9 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import code.diegohdez.githubapijava.Activity.ReposActivity;
+import code.diegohdez.githubapijava.Activity.ReposDetailActivity;
 import code.diegohdez.githubapijava.Data.DataOfRepos;
 import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.R;
+import code.diegohdez.githubapijava.Utils.Constants.Intents;
 import okhttp3.Response;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
@@ -72,6 +75,16 @@ public class ReposAdapter extends RecyclerView.Adapter {
         if (holder instanceof ViewHolderItemRepo) {
             final DataOfRepos repo = repos.get(position);
             ((ViewHolderItemRepo) holder).root.setTag(holder);
+            ((ViewHolderItemRepo) holder).root.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ReposDetailActivity.class)
+                            .putExtra(Intents.REPO_ID, repo.getId())
+                            .putExtra(Intents.REPO_NAME, repo.getName());
+                    context.startActivity(intent);
+                }
+            });
             ((ViewHolderItemRepo) holder).name.setText(repo.getName());
             ((ViewHolderItemRepo) holder).description.setText(repo.getDescription());
             ((ViewHolderItemRepo) holder).repoModal.setOnClickListener(new View.OnClickListener() {
