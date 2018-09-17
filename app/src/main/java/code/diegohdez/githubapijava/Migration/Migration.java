@@ -1,11 +1,14 @@
 package code.diegohdez.githubapijava.Migration;
 
+import java.util.Date;
+
 import code.diegohdez.githubapijava.Utils.Constants.Fields;
 import io.realm.DynamicRealm;
 import io.realm.FieldAttribute;
 import io.realm.RealmMigration;
 import io.realm.RealmSchema;
 
+import static code.diegohdez.githubapijava.Utils.Constants.Schema.ISSUE_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.OWNER_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.REPO_SCHEMA;
 
@@ -54,6 +57,25 @@ public class Migration implements RealmMigration {
         if (oldVersion == 4) {
             schema.get(OWNER_SCHEMA)
                     .addField(Fields.REPOS, long.class);
+            oldVersion++;
+        }
+
+        if (oldVersion == 5) {
+            schema.create(ISSUE_SCHEMA)
+                    .addField(Fields.ID, long.class, FieldAttribute.PRIMARY_KEY)
+                    .addField(Fields.TITLE, String.class)
+                    .addField(Fields.DESCRIPTION, String.class)
+                    .addField(Fields.NUMBER, long.class)
+                    .addField(Fields.STATE, String.class)
+                    .addRealmObjectField(Fields.USER, schema.get(OWNER_SCHEMA))
+                    .addRealmObjectField(Fields.ASSIGNEE, schema.get(OWNER_SCHEMA))
+                    .addField(Fields.CLOSED_AT, Date.class)
+                    .addField(Fields.CREATED_AT, Date.class)
+                    .addField(Fields.UPDATED_AT, Date.class);
+
+            schema.get(REPO_SCHEMA)
+                    .addRealmListField(Fields.ISSUES, schema.get(ISSUE_SCHEMA));
+
             oldVersion++;
         }
     }
