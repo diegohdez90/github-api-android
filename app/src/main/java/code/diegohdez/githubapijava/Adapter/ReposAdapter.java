@@ -32,10 +32,16 @@ import code.diegohdez.githubapijava.R;
 import code.diegohdez.githubapijava.Utils.Constants.Intents;
 import okhttp3.Response;
 
+import static code.diegohdez.githubapijava.Utils.Constants.API.ACCEPT;
+import static code.diegohdez.githubapijava.Utils.Constants.API.APPLICATION_VND_GITHUB;
+import static code.diegohdez.githubapijava.Utils.Constants.API.AUTHORIZATION;
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
+import static code.diegohdez.githubapijava.Utils.Constants.API.STARRED_REPO_ERROR;
+import static code.diegohdez.githubapijava.Utils.Constants.API.STARRED_REPO_SUCCESS;
 import static code.diegohdez.githubapijava.Utils.Constants.API.STAR_REPO;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER_REPOS;
+import static code.diegohdez.githubapijava.Utils.Constants.API.WATCHED_REPO_ERROR;
 import static code.diegohdez.githubapijava.Utils.Constants.API.WATCH_REPO;
 
 public class ReposAdapter extends RecyclerView.Adapter {
@@ -104,14 +110,13 @@ public class ReposAdapter extends RecyclerView.Adapter {
                             .get(BASE_URL + USER + STAR_REPO + "/" + account + "/" + repo.getName());
                     String token = AppManager.getOurInstance().getToken();
                     if (token.length() > 0) {
-                        getWatcher.addHeaders("Authorization", token);
-                        getStar.addHeaders("Authorization", token);
+                        getWatcher.addHeaders(AUTHORIZATION, token);
+                        getStar.addHeaders(AUTHORIZATION, token);
 
                         getWatcher.build()
                                 .getAsJSONObject(new JSONObjectRequestListener() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        Log.i(TAG, response.toString());
                                         boolean subscribed = false;
                                         try {
                                             subscribed = response.getBoolean("subscribed");
@@ -123,7 +128,7 @@ public class ReposAdapter extends RecyclerView.Adapter {
 
                                     @Override
                                     public void onError(ANError anError) {
-                                        if (anError.getErrorCode() == 404) context.isSubscribed(false);
+                                        if (anError.getErrorCode() == WATCHED_REPO_ERROR) context.isSubscribed(false);
                                         String message = "Error: " + anError.getErrorDetail() + "\n" +
                                                 "Body: " + anError.getErrorBody() + "\n" +
                                                 "Message: " + anError.getMessage() + "\n" +
@@ -132,18 +137,18 @@ public class ReposAdapter extends RecyclerView.Adapter {
                                     }
                                 });
 
-                        getStar.addHeaders("Accept", "application/vnd.github.v3.star+json")
+                        getStar.addHeaders(ACCEPT, APPLICATION_VND_GITHUB)
                                 .build()
                                 .getAsOkHttpResponse(new OkHttpResponseListener() {
                                     @Override
                                     public void onResponse(Response response) {
-                                        if (response.code() == 204) context.isStarred(true);
-                                        else  if (response.code() == 404) context.isStarred(false);
+                                        if (response.code() == STARRED_REPO_SUCCESS) context.isStarred(true);
+                                        else if (response.code() == STARRED_REPO_ERROR) context.isStarred(false);
                                     }
 
                                     @Override
                                     public void onError(ANError anError) {
-                                        if (anError.getErrorCode() == 404) context.isStarred(false);
+                                        if (anError.getErrorCode() == STARRED_REPO_ERROR) context.isStarred(false);
                                         String message = "Error: " + anError.getErrorDetail() + "\n" +
                                                 "Body: " + anError.getErrorBody() + "\n" +
                                                 "Message: " + anError.getMessage() + "\n" +
