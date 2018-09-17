@@ -8,7 +8,7 @@ import android.support.v4.view.ViewPager;
 
 import java.util.ArrayList;
 
-import code.diegohdez.githubapijava.Adapter.IssuesAdapter;
+import code.diegohdez.githubapijava.Adapter.PageRepoAdapter;
 import code.diegohdez.githubapijava.AsyncTask.IssuesRepo;
 import code.diegohdez.githubapijava.Data.DataOfIssues;
 import code.diegohdez.githubapijava.Manager.AppManager;
@@ -29,7 +29,7 @@ public class ReposDetailActivity extends FragmentActivity {
     private Realm realm;
     private AppManager appManager;
 
-    IssuesAdapter issuesAdapter;
+    PageRepoAdapter pageRepoAdapter;
     ViewPager viewPager;
 
     @Override
@@ -45,9 +45,9 @@ public class ReposDetailActivity extends FragmentActivity {
         long repoId = bundle.getLong(Intents.REPO_ID);
         IssuesRepo issues = new IssuesRepo(this, repoId);
         issues.execute(BASE_URL + USER_REPOS + appManager.getAccount() + "/" +repoName + USER_ISSUES);
-        issuesAdapter = new IssuesAdapter(getSupportFragmentManager());
+        pageRepoAdapter = new PageRepoAdapter(getSupportFragmentManager());
         viewPager = findViewById(R.id.repo_pager_details);
-        viewPager.setAdapter(issuesAdapter);
+        viewPager.setAdapter(pageRepoAdapter);
 
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -78,6 +78,6 @@ public class ReposDetailActivity extends FragmentActivity {
     public void createIssuesAdapter(long id) {
         Repo repo = realm.where(Repo.class).equalTo(Fields.ID, id).findFirst();
         ArrayList<DataOfIssues> list = DataOfIssues.createList(repo.getIssues());
-        issuesAdapter.setList(list);
+        pageRepoAdapter.setList(list);
     }
 }

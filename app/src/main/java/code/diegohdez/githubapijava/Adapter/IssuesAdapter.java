@@ -1,55 +1,29 @@
 package code.diegohdez.githubapijava.Adapter;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import code.diegohdez.githubapijava.R;
 
-import code.diegohdez.githubapijava.Data.DataOfIssues;
+public class IssuesAdapter extends Fragment {
 
-import static code.diegohdez.githubapijava.Utils.Constants.API.DATE_REPO_FORMAT;
-
-public class IssuesAdapter extends FragmentStatePagerAdapter {
-
-    private SimpleDateFormat dateFormat;
-    private ArrayList<DataOfIssues> list;
-
-
-    public IssuesAdapter(FragmentManager fm) {
-        super(fm);
-        list = new ArrayList<>();
-        dateFormat = new SimpleDateFormat(DATE_REPO_FORMAT);
-    }
-
-    public void setList (ArrayList<DataOfIssues> list) {
-        this.list = list;
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public Fragment getItem(int position) {
-        Fragment fragment = new IssueItemAdapter();
-        Bundle args = new Bundle();
-        args.putString(IssueItemAdapter.ISSUE_TITLE, list.get(position).getTitle());
-        args.putString(IssueItemAdapter.ISSUE_STATE, list.get(position).getState());
-        args.putString(IssueItemAdapter.ISSUE_CLOSED, dateFormat.format(list.get(position).getClosedAt()));
-        args.putString(IssueItemAdapter.ISSUE_CLOSED, dateFormat.format(list.get(position).getClosedAt()));
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public int getCount() {
-        return (this.list.size() > 0) ? this.list.size() : 0;
-    }
+    public static final String ISSUE_TITLE = "ISSUE_TITLE";
 
     @Nullable
     @Override
-    public CharSequence getPageTitle(int position) {
-        return this.list.get(position).getTitle();
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.item_issue, container, false);
+        Bundle args = getArguments();
+        ((TextView) root.findViewById(R.id.issue_title))
+                .setText(args.getString(ISSUE_TITLE));
+        return  root;
     }
 }
