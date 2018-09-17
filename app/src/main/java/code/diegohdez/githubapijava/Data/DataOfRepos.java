@@ -8,6 +8,7 @@ import code.diegohdez.githubapijava.Model.Repo;
 
 public class DataOfRepos {
 
+    private long id;
     private String name;
     private String description;
     private long stars;
@@ -16,6 +17,7 @@ public class DataOfRepos {
     private long subscribers;
 
     public DataOfRepos (ReposBuilder builder) {
+        this.id = builder.getId();
         this.name = builder.getName();
         this.description = builder.getDescription();
         this.stars = builder.getStars();
@@ -25,6 +27,10 @@ public class DataOfRepos {
     }
 
     public DataOfRepos() { }
+
+    public void setId(long id) { this.id = id; }
+
+    public long getId() { return id; }
 
     public String getName() {
         return name;
