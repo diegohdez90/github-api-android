@@ -5,6 +5,7 @@ public class API {
     public static final String USERS = "users/";
     public static final String REPOS = "/repos";
     public static final String USER_REPOS = "repos/";
+    public static final String USER_ISSUES = "/issues";
     public static final String USER = "user";
     public static final String WATCH_REPO = "/subscription";
     public static final String STAR_REPO = "/starred";
@@ -19,6 +20,9 @@ public class API {
     public static final String STAR = "Star";
 
     public static final String GET_TOKEN = BASE_URL + USER;
+
+    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    public static final String DATE_REPO_FORMAT = "M dd',' yyyy";
 
     public static final String getRepos(String username) {
         return BASE_URL + USERS + username + REPOS;
