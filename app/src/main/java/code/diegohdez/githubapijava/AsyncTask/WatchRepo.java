@@ -11,6 +11,9 @@ import com.androidnetworking.error.ANError;
 import code.diegohdez.githubapijava.Activity.ReposActivity;
 import code.diegohdez.githubapijava.Utils.Request.API;
 
+import static code.diegohdez.githubapijava.Utils.Constants.API.UNWATCH_REPO_SUCCESS;
+import static code.diegohdez.githubapijava.Utils.Constants.API.WATCH_REPO_SUCCESS;
+
 public class WatchRepo extends AsyncTask<String, Void, ANResponse> {
 
     private static final String TAG = WatchRepo.class.getSimpleName();
@@ -38,9 +41,9 @@ public class WatchRepo extends AsyncTask<String, Void, ANResponse> {
     protected void onPostExecute(ANResponse response) {
         super.onPostExecute(response);
         if (response.isSuccess()) {
-            if(response.getOkHttpResponse().code() == 200) {
+            if(response.getOkHttpResponse().code() == WATCH_REPO_SUCCESS) {
                 ((ReposActivity) context).updateRepoAfterWatched(true, name,  "Watch repo successfully");
-            } else if (response.getOkHttpResponse().code() == 204)
+            } else if (response.getOkHttpResponse().code() == UNWATCH_REPO_SUCCESS)
                 ((ReposActivity) context).updateRepoAfterWatched(false, name, "Unwatch repo successfully");
         } else {
             ANError anError = response.getError();

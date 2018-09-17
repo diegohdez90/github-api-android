@@ -23,6 +23,9 @@ public class API {
     public static final String WATCH = "Watch";
     public static final String STAR = "Star";
 
+    public static final int WATCH_REPO_SUCCESS = 200;
+    public static final int UNWATCH_REPO_SUCCESS = 204;
+
     public static final String GET_TOKEN = BASE_URL + USER;
 
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
