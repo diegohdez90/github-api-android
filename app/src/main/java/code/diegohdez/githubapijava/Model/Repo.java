@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -29,9 +30,11 @@ public class Repo extends RealmObject{
     @SerializedName("subscribers_count")
     private long subscribers;
     private Owner owner;
+    private RealmList<Issue> issues;
 
     public Repo() {
     }
+
 
     public Repo(long id,
                 String name,
@@ -44,7 +47,8 @@ public class Repo extends RealmObject{
                 Date createdAt,
                 Date updatedAt,
                 long subscribers,
-                Owner owner) {
+                Owner owner,
+                RealmList<Issue> issues) {
         this.id = id;
         this.name = name;
         this.fullName = fullName;
@@ -57,6 +61,7 @@ public class Repo extends RealmObject{
         this.updatedAt = updatedAt;
         this.subscribers = subscribers;
         this.owner = owner;
+        this.issues = issues;
     }
 
     public long getId() {
@@ -154,4 +159,8 @@ public class Repo extends RealmObject{
     public void setOwner(Owner owner) {
         this.owner = owner;
     }
+
+    public RealmList<Issue> getIssues() { return issues; }
+
+    public void setIssues(RealmList<Issue> issues) { this.issues = issues; }
 }
