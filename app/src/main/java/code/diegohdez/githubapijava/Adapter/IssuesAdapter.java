@@ -18,6 +18,7 @@ import code.diegohdez.githubapijava.R;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.CLOSED;
 import static code.diegohdez.githubapijava.Utils.Constants.API.DATE_REPO_FORMAT;
+import static code.diegohdez.githubapijava.Utils.Constants.API.MERGED;
 import static code.diegohdez.githubapijava.Utils.Constants.API.OPEN;
 
 public class IssuesAdapter extends RecyclerView.Adapter {
@@ -56,13 +57,18 @@ public class IssuesAdapter extends RecyclerView.Adapter {
             DataOfIssues issue = issues.get(position);
             ((ViewHolderItemIssue) holder).title.setText(issue.getTitle());
             ((ViewHolderItemIssue) holder).header.setText(getHeader(
+                    issue.isPull(),
+                    issue.getPullState(),
                     issue.getNumber(),
                     issue.getState(),
                     issue.getUser(),
                     issue.getCreatedAt(),
                     issue.getClosedAt()
             ));
-            ((ViewHolderItemIssue) holder).icon.setImageResource(getDrawable(issue.getState()));
+            ((ViewHolderItemIssue) holder).icon.setImageResource(getDrawable(
+                    issue.isPull(),
+                    issue.getPullState(),
+                    issue.getState()));
         }
     }
 
@@ -76,18 +82,44 @@ public class IssuesAdapter extends RecyclerView.Adapter {
         return ITEM;
     }
 
-    private String getHeader(long number, String state, String user, Date createdAt, Date closedAt) {
+    private String getHeader(boolean isPull,
+                             String pullState,
+                             long number,
+                             String state,
+                             String user,
+                             Date createdAt,
+                             Date closedAt) {
+        if (isPull) {
+         switch (pullState) {
+             case OPEN:
+                 return "#" + number + " opened by " + user + " in " + dateFormat.format(createdAt);
+             case CLOSED:
+                 return "#" + number + " by " + user + " closed in " + dateFormat.format(closedAt);
+             case MERGED:
+                 return "#" + number + " by " + user + " merged in " + dateFormat.format(closedAt);
+         }
+        }
         switch (state) {
             case OPEN:
                 return "#" + number + " opened by " + user + " in " + dateFormat.format(createdAt);
             case CLOSED:
                 return "#" + number + " by " + user + " closed in " + dateFormat.format(closedAt);
-                default:
-                    return "";
+            default:
+                return "";
         }
     }
 
-    private int getDrawable(String state) {
+    private int getDrawable(boolean isPull, String pullState, String state) {
+        if (isPull) {
+            switch (pullState) {
+                case OPEN:
+                    return R.drawable.pull_open;
+                case CLOSED:
+                    return R.drawable.pull_closed;
+                case MERGED:
+                    return R.drawable.pull_merged;
+            }
+        }
         switch (state) {
             case OPEN:
                 return R.drawable.issue_open;
