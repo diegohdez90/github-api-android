@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/image_pull"
+            android:src="@drawable/pull_open"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="8"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/pull_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pull description"
+            android:textSize="24sp"/>
+        <TextView
+            android:id="@+id/pull_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pull opened by user N day(s) ago"/>
+    </LinearLayout>
+</LinearLayout>
