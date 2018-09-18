@@ -19,7 +19,8 @@ public class DataOfIssues {
     private Date closedAt;
     private Date createdAt;
     private Date updatedAt;
-
+    private boolean isPull;
+    private String pullState;
 
     public DataOfIssues(IssuesBuilder builder) {
         this.id = builder.getId();
@@ -32,6 +33,8 @@ public class DataOfIssues {
         this.closedAt = builder.getClosedAt();
         this.createdAt = builder.getCreatedAt();
         this.updatedAt = builder.getUpdatedAt();
+        this.isPull = builder.isPull();
+        this.pullState = builder.getPullState();
     }
 
     public long getId() {
@@ -74,6 +77,10 @@ public class DataOfIssues {
         return updatedAt;
     }
 
+    public boolean isPull() { return isPull; }
+
+    public String getPullState() { return pullState; }
+
     public static ArrayList<DataOfIssues> createList (List<Issue> issues) {
         ArrayList<DataOfIssues> list = new ArrayList<>();
         for (Issue issue :  issues) {
@@ -87,6 +94,7 @@ public class DataOfIssues {
                     .setCreatedAt(issue.getCreatedAt())
                     .setUpdatedAt(issue.getUpdatedAt())
                     .setClosedAt(issue.getClosedAt())
+                    .setIsPull(issue.getPullInfo())
                     .build();
             list.add(item);
         }

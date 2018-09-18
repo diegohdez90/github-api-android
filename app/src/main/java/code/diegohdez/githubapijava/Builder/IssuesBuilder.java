@@ -4,6 +4,7 @@ import java.util.Date;
 
 import code.diegohdez.githubapijava.Data.DataOfIssues;
 import code.diegohdez.githubapijava.Model.Owner;
+import code.diegohdez.githubapijava.Model.PullInfo;
 
 public class IssuesBuilder {
     private long id;
@@ -16,6 +17,8 @@ public class IssuesBuilder {
     private Date closedAt;
     private Date createdAt;
     private Date updatedAt;
+    private boolean isPull;
+    private String pullState;
 
     public IssuesBuilder (long id) {
         this.id = id;
@@ -66,6 +69,18 @@ public class IssuesBuilder {
         return this;
     }
 
+    public IssuesBuilder setIsPull(PullInfo pullInfo) {
+        if (pullInfo != null) {
+            this.isPull = true;
+            this.pullState = pullInfo.getState();
+        }
+        else {
+            this.isPull = false;
+            this.pullState = "none";
+        }
+        return this;
+    }
+
     public DataOfIssues build() {
         return new DataOfIssues(this);
     }
@@ -109,4 +124,8 @@ public class IssuesBuilder {
     public Date getUpdatedAt() {
         return updatedAt;
     }
+
+    public boolean isPull() { return isPull; }
+
+    public String getPullState() { return pullState; }
 }
