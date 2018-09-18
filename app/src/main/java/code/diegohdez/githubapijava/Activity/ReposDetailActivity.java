@@ -4,13 +4,13 @@ import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import java.util.ArrayList;
 
 import code.diegohdez.githubapijava.Adapter.PageRepoAdapter;
-import code.diegohdez.githubapijava.AsyncTask.IssuesRepo;
+import code.diegohdez.githubapijava.AsyncTask.DetailsRepo;
 import code.diegohdez.githubapijava.Data.DataOfIssues;
+import code.diegohdez.githubapijava.Data.DataOfPulls;
 import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.R;
@@ -19,7 +19,9 @@ import code.diegohdez.githubapijava.Utils.Constants.Intents;
 import io.realm.Realm;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
+import static code.diegohdez.githubapijava.Utils.Constants.API.STATE_ALL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER_ISSUES;
+import static code.diegohdez.githubapijava.Utils.Constants.API.USER_PULLS;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER_REPOS;
 
 public class ReposDetailActivity extends AppCompatActivity {
@@ -43,8 +45,9 @@ public class ReposDetailActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         String repoName = bundle.getString(Intents.REPO_NAME);
         long repoId = bundle.getLong(Intents.REPO_ID);
-        IssuesRepo issues = new IssuesRepo(this, repoId);
-        issues.execute(BASE_URL + USER_REPOS + appManager.getAccount() + "/" +repoName + USER_ISSUES + "?state=all");
+        DetailsRepo details = new DetailsRepo(this, repoId);
+        details.execute(BASE_URL + USER_REPOS + appManager.getAccount() + "/" + repoName + USER_PULLS + STATE_ALL,
+                BASE_URL + USER_REPOS + appManager.getAccount() + "/" +repoName + USER_ISSUES + STATE_ALL);
         pageRepoAdapter = new PageRepoAdapter(getSupportFragmentManager());
         viewPager = findViewById(R.id.repo_pager_details);
         viewPager.setAdapter(pageRepoAdapter);
@@ -80,5 +83,18 @@ public class ReposDetailActivity extends AppCompatActivity {
         Repo repo = realm.where(Repo.class).equalTo(Fields.ID, id).findFirst();
         ArrayList<DataOfIssues> list = DataOfIssues.createList(repo.getIssues());
         pageRepoAdapter.setIssues(list);
+    }
+
+    public void createPullsAdapter(long id) {
+        Repo repo = realm.where(Repo.class).equalTo(Fields.ID, id).findFirst();
+        ArrayList<DataOfPulls> list = DataOfPulls.createList(repo.getPulls());
+        pageRepoAdapter.setPulls(list);
+    }
+
+    public void createAdapter(long id) {
+        Repo repo = realm.where(Repo.class).equalTo(Fields.ID, id).findFirst();
+        ArrayList<DataOfIssues> issues = DataOfIssues.createList(repo.getIssues());
+        ArrayList<DataOfPulls> pulls = DataOfPulls.createList(repo.getPulls());
+        pageRepoAdapter.setData(issues, pulls);
     }
 }
