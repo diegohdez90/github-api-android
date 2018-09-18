@@ -33,14 +33,14 @@ public class GetToken extends AsyncTask<String, Void, ANResponse> {
     @Override
     protected ANResponse doInBackground(String... strings) {
         ANRequest request = API.getToken(strings[0], token);
-        return (ANResponse) request.executeForJSONObject();
+        return request.executeForJSONObject();
     }
 
     @Override
     protected void onPostExecute(ANResponse response) {
         super.onPostExecute(response);
         String message = "";
-        int code = 0;
+        int code;
         if (response.isSuccess()) {
             Log.d(TAG, response.toString());
             Response anResponse = response.getOkHttpResponse();

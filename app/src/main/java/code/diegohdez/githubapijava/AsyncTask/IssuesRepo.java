@@ -79,7 +79,7 @@ public class IssuesRepo extends AsyncTask<String, Void, ANResponse>{
             if (item.getAssignee() != null) issue.setAssignee(item.getAssignee());
             issue.setCreatedAt(item.getCreatedAt());
             issue.setUpdatedAt(item.getUpdatedAt());
-            if (!issue.getState().equals("closed")) issue.setClosedAt(item.getClosedAt());
+            if (issue.getState().equals("closed")) issue.setClosedAt(item.getClosedAt());
             issues.add(issue);
         }
         return issues;

@@ -24,13 +24,11 @@ public class Repos extends AsyncTask<String, Void, ANResponse[]> {
     public static final String TAG = Repos.class.getSimpleName();
     private Realm realm;
     private Context context;
-    API api;
     private int page = 1;
 
     public Repos(MainActivity context) {
         realm = Realm.getDefaultInstance();
         this.context = context;
-        api = new API();
     }
 
     public Repos(ReposActivity context, int page) {
@@ -122,7 +120,7 @@ public class Repos extends AsyncTask<String, Void, ANResponse[]> {
             case "ReposActivity":
 
                 ReposActivity activity = (ReposActivity) context;
-                activity.successLoader(message, status, list);
+                activity.successLoader(list);
                 break;
         }
     }
