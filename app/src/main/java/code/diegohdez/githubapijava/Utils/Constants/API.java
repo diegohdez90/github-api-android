@@ -31,10 +31,14 @@ public class API {
     public static final int STARRED_REPO_ERROR = 404;
     public static final int FORK_REPO_SUCCESS = 202;
 
+    public static final String OPEN = "open";
+    public static final String CLOSED = "closed";
+    public static final String MERGED = "merged";
+
     public static final String GET_TOKEN = BASE_URL + USER;
 
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-    public static final String DATE_REPO_FORMAT = "M dd',' yyyy";
+    public static final String DATE_REPO_FORMAT = "MMMM dd',' yyyy";
 
     public static final String getRepos(String username) {
         return BASE_URL + USERS + username + REPOS;
