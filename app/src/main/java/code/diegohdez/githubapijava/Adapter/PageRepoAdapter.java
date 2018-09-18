@@ -1,28 +1,24 @@
 package code.diegohdez.githubapijava.Adapter;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import code.diegohdez.githubapijava.Data.DataOfIssues;
 
-import static code.diegohdez.githubapijava.Utils.Constants.API.DATE_REPO_FORMAT;
-
 public class PageRepoAdapter extends FragmentStatePagerAdapter {
 
-    private SimpleDateFormat dateFormat;
     private ArrayList<DataOfIssues> issues;
 
-
+    @SuppressLint("SimpleDateFormat")
     public PageRepoAdapter(FragmentManager fm) {
         super(fm);
         issues = new ArrayList<>();
-        dateFormat = new SimpleDateFormat(DATE_REPO_FORMAT);
     }
 
     public void setIssues (ArrayList<DataOfIssues> issues) {
@@ -34,8 +30,7 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                Fragment fragment = new IssuesFragmentAdapter(issues);
-                return fragment;
+                return new IssuesFragmentAdapter(issues);
         }
         return new Fragment();
     }
