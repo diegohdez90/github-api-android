@@ -10,10 +10,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 
 import code.diegohdez.githubapijava.Data.DataOfIssues;
+import code.diegohdez.githubapijava.Data.DataOfPulls;
 
 public class PageRepoAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<DataOfIssues> issues;
+    private ArrayList<DataOfPulls> pulls;
 
     @SuppressLint("SimpleDateFormat")
     public PageRepoAdapter(FragmentManager fm) {
@@ -23,6 +25,17 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
 
     public void setIssues (ArrayList<DataOfIssues> issues) {
         this.issues = issues;
+        notifyDataSetChanged();
+    }
+
+    public void setPulls(ArrayList<DataOfPulls> pulls) {
+        this.pulls = pulls;
+        notifyDataSetChanged();
+    }
+
+    public void setData(ArrayList<DataOfIssues> issues, ArrayList<DataOfPulls> pulls) {
+        this.issues = issues;
+        this.pulls = pulls;
         notifyDataSetChanged();
     }
 
