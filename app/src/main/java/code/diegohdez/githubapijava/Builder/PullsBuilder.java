@@ -5,8 +5,6 @@ import java.util.Date;
 import code.diegohdez.githubapijava.Data.DataOfPulls;
 import code.diegohdez.githubapijava.Model.Owner;
 
-import static code.diegohdez.githubapijava.Utils.Constants.API.CLOSED;
-
 public class PullsBuilder {
 
     private long id;
@@ -66,7 +64,7 @@ public class PullsBuilder {
     }
 
     public PullsBuilder setClosedAt(Date closedAt) {
-        if (this.state == CLOSED) this.closedAt = closedAt;
+        if (closedAt != null) this.closedAt = closedAt;
         return this;
     }
 
