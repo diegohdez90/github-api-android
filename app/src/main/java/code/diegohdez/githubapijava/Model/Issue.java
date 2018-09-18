@@ -24,6 +24,7 @@ public class Issue extends RealmObject {
     private Date createdAt;
     @SerializedName("updated_at")
     private Date updatedAt;
+    private PullInfo pullInfo;
 
     public Issue() { }
 
@@ -36,7 +37,8 @@ public class Issue extends RealmObject {
                  Owner assignee,
                  Date closedAt,
                  Date createdAt,
-                 Date updatedAt) {
+                 Date updatedAt,
+                 PullInfo pullInfo) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -47,6 +49,7 @@ public class Issue extends RealmObject {
         this.closedAt = closedAt;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.pullInfo = pullInfo;
     }
 
     public long getId() {
@@ -128,4 +131,8 @@ public class Issue extends RealmObject {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public void setPullInfo(PullInfo pullInfo) { this.pullInfo = pullInfo; }
+
+    public PullInfo getPullInfo() { return pullInfo; }
 }
