@@ -18,6 +18,7 @@ public class Fields {
     public static final String CREATED_AT = "createdAt";
     public static final String PUSHED_AT = "pushedAt";
     public static final String UPDATED_AT = "updatedAt";
+    public static final String MERGED_AT = "mergedAt";
     public static final String REPOS = "repos";
     public static final String TITLE = "title";
     public static final String DESCRIPTION = "description";
@@ -27,4 +28,7 @@ public class Fields {
     public static final String ASSIGNEE = "assignee";
     public static final String CLOSED_AT = "closedAt";
     public static final String ISSUES = "issues";
+    public static final String PULLS = "pulls";
+    public static final String PULL_INFO = "pullInfo";
+    public static final String PULL_STATE = "state";
 }
