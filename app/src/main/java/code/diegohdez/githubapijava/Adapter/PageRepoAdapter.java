@@ -44,6 +44,8 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 return new IssuesFragmentAdapter();
+            case 1:
+                return new PullsFragmentAdapter();
         }
         return new Fragment();
     }
@@ -52,6 +54,8 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
     public int getItemPosition(@NonNull Object object) {
         if (object instanceof IssuesFragmentAdapter) {
             ((IssuesFragmentAdapter) object).update(this.issues);
+        } else if (object instanceof PullsFragmentAdapter) {
+            ((PullsFragmentAdapter) object).update(this.pulls);
         }
         return super.getItemPosition(object);
     }
