@@ -1,5 +1,6 @@
 package code.diegohdez.githubapijava.Adapter;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,9 +12,15 @@ import android.widget.TextView;
 
 import code.diegohdez.githubapijava.R;
 
+@SuppressLint("ValidFragment")
 public class IssuesAdapter extends Fragment {
 
     public static final String ISSUE_TITLE = "ISSUE_TITLE";
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
