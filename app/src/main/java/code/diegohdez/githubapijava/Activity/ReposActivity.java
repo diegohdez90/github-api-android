@@ -1,9 +1,11 @@
 package code.diegohdez.githubapijava.Activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -62,10 +64,7 @@ public class ReposActivity extends AppCompatActivity {
 
     private static final String TAG = ReposActivity.class.getSimpleName();
     private Realm realm;
-    private AppManager appManager;
     private String account;
-    private RecyclerView recyclerView;
-    private LinearLayoutManager layoutManager;
     ReposAdapter adapter;
     private Menu menu;
 
@@ -81,6 +80,7 @@ public class ReposActivity extends AppCompatActivity {
     private boolean isLastPage = false;
     private int page = 1;
     private int TOTAL_PAGES = 1;
+    @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,15 +110,15 @@ public class ReposActivity extends AppCompatActivity {
         });
         dialog = builder.create();
         realm = Realm.getDefaultInstance();
-        appManager = AppManager.getOurInstance();
+        AppManager appManager = AppManager.getOurInstance();
         account = appManager.getAccount();
         Owner owner = realm.where(Owner.class).equalTo(LOGIN, account).findFirst();
         if (owner != null) {
             TOTAL_PAGES = (owner.getRepos() > 0) ? (int) Math.ceil((double) owner.getRepos() / PAGE_SIZE) : 0;
         }
-        recyclerView = findViewById(R.id.reposList);
+        RecyclerView recyclerView = findViewById(R.id.reposList);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         RealmResults<Repo> repos = realm.where(Repo.class).equalTo(OWNER_LOGIN, account).findAll();
@@ -164,7 +164,7 @@ public class ReposActivity extends AppCompatActivity {
         final RealmResults<Repo> result = realm.where(Repo.class).equalTo(OWNER_LOGIN, account).findAll();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
-            public void execute(Realm realm) {
+            public void execute(@NonNull Realm realm) {
                 result.deleteAllFromRealm();
             }
         });
@@ -255,7 +255,7 @@ public class ReposActivity extends AppCompatActivity {
         }
     }
 
-    public void successLoader(String message, int status, List<Repo> list) {
+    public void successLoader(List<Repo> list) {
         adapter.deleteLoading();
         isLoading = false;
         List<DataOfRepos> repos = DataOfRepos.createRepoList(list);
