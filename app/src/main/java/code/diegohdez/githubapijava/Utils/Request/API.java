@@ -82,7 +82,16 @@ public class API {
     }
 
     public static ANRequest getIssues (String url) {
-        ANRequest.GetRequestBuilder builder= AndroidNetworking
+        ANRequest.GetRequestBuilder builder = AndroidNetworking
+                .get(url)
+                .addHeaders(ACCEPT, APPLICATION_VND_GITHUB);
+        String token = AppManager.getOurInstance().getToken();
+        if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
+        return builder.build();
+    }
+
+    public static ANRequest getPulls (String url) {
+        ANRequest.GetRequestBuilder builder = AndroidNetworking
                 .get(url)
                 .addHeaders(ACCEPT, APPLICATION_VND_GITHUB);
         String token = AppManager.getOurInstance().getToken();
