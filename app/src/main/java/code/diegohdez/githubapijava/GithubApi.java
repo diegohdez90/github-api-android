@@ -28,7 +28,7 @@ public class GithubApi extends Application{
         RealmConfiguration realmConfiguration = new RealmConfiguration
                 .Builder()
                 .name("github-api")
-                .schemaVersion(6)
+                .schemaVersion(7)
                 .migration(new Migration())
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
