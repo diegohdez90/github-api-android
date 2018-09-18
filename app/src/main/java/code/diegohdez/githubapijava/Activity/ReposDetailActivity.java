@@ -1,10 +1,10 @@
 package code.diegohdez.githubapijava.Activity;
 
 import android.app.ActionBar;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER_ISSUES;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER_REPOS;
 
-public class ReposDetailActivity extends FragmentActivity {
+public class ReposDetailActivity extends AppCompatActivity {
 
     private static final String TAG = ReposDetailActivity.class.getSimpleName();
 
@@ -35,7 +35,7 @@ public class ReposDetailActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final ActionBar actionBar = getActionBar();
+        final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         setContentView(R.layout.activity_repos_detail);
         realm = Realm.getDefaultInstance();
         appManager = AppManager.getOurInstance();
@@ -44,26 +44,26 @@ public class ReposDetailActivity extends FragmentActivity {
         String repoName = bundle.getString(Intents.REPO_NAME);
         long repoId = bundle.getLong(Intents.REPO_ID);
         IssuesRepo issues = new IssuesRepo(this, repoId);
-        issues.execute(BASE_URL + USER_REPOS + appManager.getAccount() + "/" +repoName + USER_ISSUES);
+        issues.execute(BASE_URL + USER_REPOS + appManager.getAccount() + "/" +repoName + USER_ISSUES + "?state=all");
         pageRepoAdapter = new PageRepoAdapter(getSupportFragmentManager());
         viewPager = findViewById(R.id.repo_pager_details);
         viewPager.setAdapter(pageRepoAdapter);
 
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+        android.support.v7.app.ActionBar.TabListener tabListener = new android.support.v7.app.ActionBar.TabListener() {
             @Override
-            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+            public void onTabSelected(android.support.v7.app.ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
-            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+            public void onTabUnselected(android.support.v7.app.ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
 
             }
 
             @Override
-            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+            public void onTabReselected(android.support.v7.app.ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
 
             }
         };
@@ -72,12 +72,13 @@ public class ReposDetailActivity extends FragmentActivity {
         .setText("Issues")
         .setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab()
-        .setText("Pull Request"));
+        .setText("Pull Request")
+        .setTabListener(tabListener));
     }
 
     public void createIssuesAdapter(long id) {
         Repo repo = realm.where(Repo.class).equalTo(Fields.ID, id).findFirst();
         ArrayList<DataOfIssues> list = DataOfIssues.createList(repo.getIssues());
-        pageRepoAdapter.setList(list);
+        pageRepoAdapter.setIssues(list);
     }
 }
