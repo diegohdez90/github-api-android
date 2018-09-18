@@ -30,7 +30,7 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new IssuesFragmentAdapter(issues);
+                return new IssuesFragmentAdapter();
         }
         return new Fragment();
     }

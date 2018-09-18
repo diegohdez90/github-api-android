@@ -76,7 +76,7 @@ public class IssuesAdapter extends RecyclerView.Adapter {
         return ITEM;
     }
 
-    public String getHeader(long number, String state, String user, Date createdAt, Date closedAt) {
+    private String getHeader(long number, String state, String user, Date createdAt, Date closedAt) {
         switch (state) {
             case OPEN:
                 return "#" + number + " opened by " + user + " in " + dateFormat.format(createdAt);
@@ -87,7 +87,7 @@ public class IssuesAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public int getDrawable(String state) {
+    private int getDrawable(String state) {
         switch (state) {
             case OPEN:
                 return R.drawable.issue_open;
@@ -107,7 +107,7 @@ public class IssuesAdapter extends RecyclerView.Adapter {
         TextView title;
         TextView header;
         ImageView icon;
-        public ViewHolderItemIssue(View itemView) {
+        ViewHolderItemIssue(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.issue_title);
             header = itemView.findViewById(R.id.issue_header);

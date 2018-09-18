@@ -216,7 +216,7 @@ public class ReposAdapter extends RecyclerView.Adapter {
         TextView description;
         ImageView repoModal;
         View root;
-        public ViewHolderItemRepo(View itemView) {
+        ViewHolderItemRepo(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.repo_name);
             description = itemView.findViewById(R.id.repo_description);
@@ -225,18 +225,9 @@ public class ReposAdapter extends RecyclerView.Adapter {
         }
     }
 
-    private class ViewHolderHeaderRepo extends RecyclerView.ViewHolder {
-
-        TextView account;
-        public ViewHolderHeaderRepo(View itemView) {
-            super(itemView);
-            account = itemView.findViewById(R.id.account_repos_header);
-        }
-    }
-
     private class ViewHolderLoaderRepo extends RecyclerView.ViewHolder {
 
-        public ViewHolderLoaderRepo(View itemView) {
+        ViewHolderLoaderRepo(View itemView) {
             super(itemView);
         }
     }

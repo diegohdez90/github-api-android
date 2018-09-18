@@ -21,13 +21,8 @@ public class IssuesFragmentAdapter extends Fragment implements UpdateableFragmen
 
     public static final String ISSUE_TITLE = "ISSUE_TITLE";
 
-    private ArrayList<DataOfIssues> issues;
     RecyclerView recyclerView;
     IssuesAdapter adapter;
-
-    public IssuesFragmentAdapter(ArrayList<DataOfIssues> issues) {
-        this.issues = issues;
-    }
 
     @Nullable
     @Override
