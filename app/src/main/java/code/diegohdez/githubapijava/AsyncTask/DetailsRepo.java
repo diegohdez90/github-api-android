@@ -87,8 +87,6 @@ public class DetailsRepo extends AsyncTask<String, Void, ANResponse[]> {
                             PullInfo pullInfo = new PullInfo();
                             pullInfo.setState(pull.getState());
                             item.setPullInfo(pullInfo);
-                            Log.i(TAG, item.getTitle());
-                            Log.i(TAG, item.getPullInfo().getState());
                         }
                     }
                     repo.getIssues().addAll(list);
