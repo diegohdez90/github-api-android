@@ -6,10 +6,13 @@ public class API {
     public static final String REPOS = "/repos";
     public static final String USER_REPOS = "repos/";
     public static final String USER_ISSUES = "/issues";
+    public static final String USER_PULLS = "/pulls";
     public static final String USER = "user";
     public static final String WATCH_REPO = "/subscription";
     public static final String STAR_REPO = "/starred";
     public static final String FORK_REPO = "/forks";
+
+    public static final String STATE_ALL = "?state=all";
 
     public static final String AUTHORIZATION = "Authorization";
     public static final String ACCEPT = "Accept";
