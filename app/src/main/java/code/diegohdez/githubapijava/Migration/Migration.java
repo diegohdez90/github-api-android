@@ -10,6 +10,8 @@ import io.realm.RealmSchema;
 
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.ISSUE_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.OWNER_SCHEMA;
+import static code.diegohdez.githubapijava.Utils.Constants.Schema.PULL_INFO_SCHEMA;
+import static code.diegohdez.githubapijava.Utils.Constants.Schema.PULL_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.REPO_SCHEMA;
 
 public class Migration implements RealmMigration {
@@ -75,6 +77,33 @@ public class Migration implements RealmMigration {
 
             schema.get(REPO_SCHEMA)
                     .addRealmListField(Fields.ISSUES, schema.get(ISSUE_SCHEMA));
+
+            oldVersion++;
+        }
+
+        if (oldVersion == 6) {
+            schema.create(PULL_SCHEMA)
+                    .addField(Fields.ID, long.class, FieldAttribute.PRIMARY_KEY)
+                    .addField(Fields.TITLE, String.class)
+                    .addField(Fields.DESCRIPTION, String.class)
+                    .addField(Fields.NUMBER, long.class)
+                    .addField(Fields.STATE, String.class)
+                    .addRealmObjectField(Fields.USER, schema.get(OWNER_SCHEMA))
+                    .addRealmObjectField(Fields.ASSIGNEE, schema.get(OWNER_SCHEMA))
+                    .addField(Fields.CLOSED_AT, Date.class)
+                    .addField(Fields.CREATED_AT, Date.class)
+                    .addField(Fields.UPDATED_AT, Date.class)
+                    .addField(Fields.MERGED_AT, Date.class);
+
+            schema.create(PULL_INFO_SCHEMA)
+                    .addField(Fields.ID, String.class, FieldAttribute.PRIMARY_KEY)
+                    .addField(Fields.PULL_STATE, String.class);
+
+            schema.get(REPO_SCHEMA)
+                    .addRealmListField(Fields.PULLS, schema.get(PULL_SCHEMA));
+
+            schema.get(ISSUE_SCHEMA)
+                    .addRealmObjectField(Fields.PULL_INFO, schema.get(PULL_INFO_SCHEMA));
 
             oldVersion++;
         }
