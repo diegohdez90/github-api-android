@@ -19,8 +19,6 @@ import code.diegohdez.githubapijava.R;
 @SuppressLint("ValidFragment")
 public class IssuesFragmentAdapter extends Fragment implements UpdateableIssuesFragment {
 
-    public static final String ISSUE_TITLE = "ISSUE_TITLE";
-
     RecyclerView recyclerView;
     IssuesAdapter adapter;
 
@@ -31,7 +29,7 @@ public class IssuesFragmentAdapter extends Fragment implements UpdateableIssuesF
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.issues_fragment, container, false);
 
-        recyclerView = (RecyclerView) root.findViewById(R.id.issues_list);
+        recyclerView = root.findViewById(R.id.issues_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         adapter = new IssuesAdapter();
         recyclerView.setScrollbarFadingEnabled(true);
