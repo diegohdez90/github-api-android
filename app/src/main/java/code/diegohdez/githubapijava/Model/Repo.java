@@ -31,10 +31,9 @@ public class Repo extends RealmObject{
     private long subscribers;
     private Owner owner;
     private RealmList<Issue> issues;
+    private RealmList<Pull> pulls;
 
-    public Repo() {
-    }
-
+    public Repo() { }
 
     public Repo(long id,
                 String name,
@@ -48,7 +47,8 @@ public class Repo extends RealmObject{
                 Date updatedAt,
                 long subscribers,
                 Owner owner,
-                RealmList<Issue> issues) {
+                RealmList<Issue> issues,
+                RealmList<Pull> pulls) {
         this.id = id;
         this.name = name;
         this.fullName = fullName;
@@ -62,6 +62,7 @@ public class Repo extends RealmObject{
         this.subscribers = subscribers;
         this.owner = owner;
         this.issues = issues;
+        this.pulls = pulls;
     }
 
     public long getId() {
@@ -163,4 +164,8 @@ public class Repo extends RealmObject{
     public RealmList<Issue> getIssues() { return issues; }
 
     public void setIssues(RealmList<Issue> issues) { this.issues = issues; }
+
+    public void setPulls (RealmList<Pull> pulls) { this.pulls = pulls; }
+
+    public RealmList<Pull> getPulls() { return pulls; }
 }
