@@ -4,6 +4,6 @@ import java.util.ArrayList;
 
 import code.diegohdez.githubapijava.Data.DataOfIssues;
 
-interface UpdateableFragment {
+interface UpdateableIssuesFragment {
     public void update(ArrayList<DataOfIssues> issues);
 }

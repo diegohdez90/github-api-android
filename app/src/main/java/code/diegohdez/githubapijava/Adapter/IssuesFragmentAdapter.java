@@ -17,7 +17,7 @@ import code.diegohdez.githubapijava.Data.DataOfIssues;
 import code.diegohdez.githubapijava.R;
 
 @SuppressLint("ValidFragment")
-public class IssuesFragmentAdapter extends Fragment implements UpdateableFragment {
+public class IssuesFragmentAdapter extends Fragment implements UpdateableIssuesFragment {
 
     public static final String ISSUE_TITLE = "ISSUE_TITLE";
 
