@@ -91,8 +91,10 @@ public class IssuesFragmentAdapter extends Fragment implements UpdateableIssuesF
             adapter.deleteLoading();
             isLoading = false;
         }
-        adapter.addIssues(issues);
-        if (issues.size() < PAGE_SIZE) isLastPage = true;
-        else adapter.addLoading();
+        if (!adapter.isLoading()) {
+            adapter.addIssues(issues);
+            if (issues.size() < PAGE_SIZE) isLastPage = true;
+            else adapter.addLoading();
+        }
     }
 }
