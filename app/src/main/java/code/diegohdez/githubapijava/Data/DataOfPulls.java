@@ -21,6 +21,8 @@ public class DataOfPulls {
     private Date updatedAt;
     private Date mergedAt;
 
+    public DataOfPulls() {}
+
     public DataOfPulls(PullsBuilder builder) {
         this.id = builder.getId();
         this.title = builder.getTitle();
