@@ -31,4 +31,6 @@ public class Fields {
     public static final String PULLS = "pulls";
     public static final String PULL_INFO = "pullInfo";
     public static final String PULL_STATE = "state";
+    public static final String BRANCH_NAME = "name";
+    public static final String BRANCHES = "branches";
 }
