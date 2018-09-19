@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import code.diegohdez.githubapijava.Data.DataOfBranches;
 import code.diegohdez.githubapijava.R;
 
-public class BranchesFragmentAdapter extends Fragment implements UpdateableBranchesFragment{
+public class BranchesFragment extends Fragment implements UpdateableBranchesFragment{
 
     public static final String ARG_ID = "ID";
     public static final String ARG_REPO_NAME = "REPO_NAME";

@@ -16,6 +16,7 @@ import code.diegohdez.githubapijava.Data.DataOfPulls;
 
 public class PageRepoAdapter extends FragmentStatePagerAdapter {
 
+    private static final String TAG = PageRepoAdapter.class.getSimpleName();
     private static final String ID = "ID";
     private long id;
     private static final String REPO_NAME = "REPO_NAME";
@@ -28,7 +29,6 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
     @SuppressLint("SimpleDateFormat")
     public PageRepoAdapter(FragmentManager fm) {
         super(fm);
-        issues = new ArrayList<>();
     }
 
     public void setIssues (ArrayList<DataOfIssues> issues) {
@@ -58,15 +58,15 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new IssuesFragmentAdapter();
+                fragment = new IssuesFragment();
                 fragment.setArguments(args);
                 return fragment;
             case 1:
-                fragment = new PullsFragmentAdapter();
+                fragment = new PullsFragment();
                 fragment.setArguments(args);
                 return fragment;
             case 2:
-                fragment = new BranchesFragmentAdapter();
+                fragment = new BranchesFragment();
                 fragment.setArguments(args);
                 return fragment;
         }
@@ -75,12 +75,12 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(@NonNull Object object) {
-        if (object instanceof IssuesFragmentAdapter) {
-            ((IssuesFragmentAdapter) object).update(this.issues);
-        } else if (object instanceof PullsFragmentAdapter) {
-            ((PullsFragmentAdapter) object).update(this.pulls);
-        } else if (object instanceof BranchesFragmentAdapter) {
-            ((BranchesFragmentAdapter) object).update(this.branches);
+        if (object instanceof IssuesFragment) {
+            ((IssuesFragment) object).update(this.issues);
+        } else if (object instanceof PullsFragment) {
+            ((PullsFragment) object).update(this.pulls);
+        } else if (object instanceof BranchesFragment) {
+            ((BranchesFragment) object).update(this.branches);
         }
         return super.getItemPosition(object);
     }
