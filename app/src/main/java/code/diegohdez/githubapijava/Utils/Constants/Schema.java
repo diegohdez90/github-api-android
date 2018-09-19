@@ -6,4 +6,5 @@ public class Schema {
     public static final String ISSUE_SCHEMA = "Issue";
     public static final String PULL_SCHEMA = "Pull";
     public static final String PULL_INFO_SCHEMA = "PullInfo";
+    public static final String BRANCH_SCHEMA = "Branch";
 }
