@@ -1,6 +1,7 @@
 package code.diegohdez.githubapijava.Adapter;
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,11 @@ import code.diegohdez.githubapijava.Data.DataOfIssues;
 import code.diegohdez.githubapijava.Data.DataOfPulls;
 
 public class PageRepoAdapter extends FragmentStatePagerAdapter {
+
+    private static final String ID = "ID";
+    private long id;
+    private static final String REPO_NAME = "REPO_NAME";
+    private String repoName;
 
     private ArrayList<DataOfIssues> issues;
     private ArrayList<DataOfPulls> pulls;
@@ -41,11 +47,19 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        Bundle args = new Bundle();
+        args.putLong(ID, this.id);
+        args.putString(REPO_NAME, this.repoName);
+        Fragment fragment = null;
         switch (position) {
             case 0:
-                return new IssuesFragmentAdapter();
+                fragment = new IssuesFragmentAdapter();
+                fragment.setArguments(args);
+                return fragment;
             case 1:
-                return new PullsFragmentAdapter();
+                fragment = new PullsFragmentAdapter();
+                fragment.setArguments(args);
+                return fragment;
         }
         return new Fragment();
     }
@@ -75,5 +89,13 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
                 return "Pull Request";
         }
         return null;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setRepoName (String repoName) {
+        this.repoName = repoName;
     }
 }
