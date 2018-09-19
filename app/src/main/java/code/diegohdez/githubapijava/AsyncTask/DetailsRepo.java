@@ -11,6 +11,7 @@ import com.androidnetworking.error.ANError;
 import java.util.ArrayList;
 
 import code.diegohdez.githubapijava.Activity.ReposDetailActivity;
+import code.diegohdez.githubapijava.Model.Branch;
 import code.diegohdez.githubapijava.Model.Issue;
 import code.diegohdez.githubapijava.Model.Pull;
 import code.diegohdez.githubapijava.Model.PullInfo;
@@ -38,12 +39,14 @@ public class DetailsRepo extends AsyncTask<String, Void, ANResponse[]> {
 
     @Override
     protected ANResponse[] doInBackground(String... urls) {
-        ANRequest[] requests = new ANRequest[2];
-        ANResponse[] responses = new ANResponse[2];
+        ANRequest[] requests = new ANRequest[3];
+        ANResponse[] responses = new ANResponse[3];
         requests[0] = API.getPulls(urls[0]);
         requests[1] = API.getIssues(urls[1]);
+        requests[2] = API.getBranches(urls[2]);
         responses[0] = requests[0].executeForObjectList(Pull.class);
         responses[1] = requests[1].executeForObjectList(Issue.class);
+        responses[2] = requests[2].executeForObjectList(Branch.class);
         return responses;
     }
 
@@ -102,6 +105,26 @@ public class DetailsRepo extends AsyncTask<String, Void, ANResponse[]> {
                     "Code: " + anError.getErrorCode();
             Log.e(TAG, message);
         }
+        if (responses[2].isSuccess()) {
+            final RealmList<Branch> list = toBrancheshList((ArrayList<Branch>) responses[2].getResult());
+            if (realm.isClosed()) realm = Realm.getDefaultInstance();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    Repo repo = realm.where(Repo.class).equalTo(Fields.ID, id).findFirst();
+                    repo.getBranches().addAll(list);
+                    realm.insertOrUpdate(repo);
+                }
+            });
+        } else {
+            ANError anError = responses[2].getError();
+            String message = "Delete: " + "\n" +
+                    "Error: " + anError.getErrorDetail() + "\n" +
+                    "Body: " + anError.getErrorBody() + "\n" +
+                    "Message: " + anError.getMessage() + "\n" +
+                    "Code: " + anError.getErrorCode();
+            Log.e(TAG, message);
+        }
         realm.close();
         ((ReposDetailActivity) context).createAdapter(id);
     }
@@ -143,6 +166,16 @@ public class DetailsRepo extends AsyncTask<String, Void, ANResponse[]> {
             pulls.add(pull);
         }
         return pulls;
+    }
+
+    public RealmList<Branch> toBrancheshList(ArrayList<Branch> list) {
+        RealmList<Branch> branches = new RealmList<>();
+        for (Branch item : list) {
+            Branch branch = new Branch();
+            branch.setName(item.getName());
+            branches.add(branch);
+        }
+        return branches;
     }
 
 }
