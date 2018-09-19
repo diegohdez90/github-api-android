@@ -33,4 +33,10 @@ public class Fields {
     public static final String PULL_STATE = "state";
     public static final String BRANCH_NAME = "name";
     public static final String BRANCHES = "branches";
+    public static final String AUTHOR = "author";
+    public static final String SHA = "sha";
+    public static final String COMMITS = "commits";
+    public static final String MESSAGE = "message";
+    public static final String DATE = "date";
+    public static final String COMMIT_INFO = "commitInfo";
 }
