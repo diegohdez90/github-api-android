@@ -9,6 +9,8 @@ import io.realm.RealmMigration;
 import io.realm.RealmSchema;
 
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.BRANCH_SCHEMA;
+import static code.diegohdez.githubapijava.Utils.Constants.Schema.COMMIT_INFO_SCHEMA;
+import static code.diegohdez.githubapijava.Utils.Constants.Schema.COMMIT_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.ISSUE_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.OWNER_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.PULL_INFO_SCHEMA;
@@ -116,6 +118,24 @@ public class Migration implements RealmMigration {
 
             schema.get(REPO_SCHEMA)
                     .addRealmListField(Fields.BRANCHES, schema.get(BRANCH_SCHEMA));
+
+            oldVersion++;
+        }
+
+        if (oldVersion == 8) {
+            schema.create(COMMIT_INFO_SCHEMA)
+                    .addField(Fields.ID, String.class, FieldAttribute.PRIMARY_KEY)
+                    .addField(Fields.MESSAGE, String.class)
+                    .addField(Fields.DATE, Date.class);
+
+            schema.create(COMMIT_SCHEMA)
+                    .addField(Fields.ID, String.class, FieldAttribute.PRIMARY_KEY)
+                    .addField(Fields.SHA, String.class)
+                    .addRealmObjectField(Fields.AUTHOR, schema.get(OWNER_SCHEMA))
+                    .addRealmObjectField(Fields.COMMIT_INFO, schema.get(COMMIT_INFO_SCHEMA));
+
+            schema.get(BRANCH_SCHEMA)
+                    .addRealmListField(Fields.COMMITS, schema.get(COMMIT_SCHEMA));
 
             oldVersion++;
         }
