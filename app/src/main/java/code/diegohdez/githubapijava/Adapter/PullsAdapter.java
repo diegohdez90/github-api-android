@@ -3,6 +3,7 @@ package code.diegohdez.githubapijava.Adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,19 +27,23 @@ public class PullsAdapter extends RecyclerView.Adapter {
     private static final String TAG = PullsAdapter.class.getSimpleName();
 
     private static final int ITEM = 0;
+    private static final int LOADER = 1;
 
     ArrayList<DataOfPulls> pulls;
     SimpleDateFormat dateFormat;
+    private boolean isLoading;
 
     public PullsAdapter() {
         this.pulls = new ArrayList<>();
-        dateFormat = new SimpleDateFormat(DATE_REPO_FORMAT);
+        this.dateFormat = new SimpleDateFormat(DATE_REPO_FORMAT);
+        this.isLoading = false;
     }
 
 
     public PullsAdapter(ArrayList<DataOfPulls> pulls) {
         this.pulls = pulls;
-        dateFormat = new SimpleDateFormat(DATE_REPO_FORMAT);
+        this.dateFormat = new SimpleDateFormat(DATE_REPO_FORMAT);
+        this.isLoading = false;
     }
 
     @NonNull
@@ -49,6 +54,9 @@ public class PullsAdapter extends RecyclerView.Adapter {
         if (viewType == ITEM) {
             View item = inflater.inflate(R.layout.item_pull, parent, false);
             return new ViewHolderPullItem(item);
+        } else if(viewType == LOADER) {
+            View loader = inflater.inflate(R.layout.pull_loader, parent, false);
+            return new VIewHolderPullLoader(loader);
         } else throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
     }
 
@@ -65,6 +73,12 @@ public class PullsAdapter extends RecyclerView.Adapter {
                     pull.getClosedAt(),
                     pull.getMergedAt()));
             ((ViewHolderPullItem) holder).icon.setImageResource(getDrawable(pull.getState()));
+        } else if (holder instanceof VIewHolderPullLoader) {
+            /*
+            Nothing
+             */
+        } else {
+            Log.d(TAG, "no instance of view holder found");
         }
     }
 
@@ -75,6 +89,9 @@ public class PullsAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
+        Log.i(TAG, "position : " + position);
+        Log.i(TAG, "size : " + this.pulls.size());
+        if (position == this.pulls.size() - 1 && isLoading) return LOADER;
         return ITEM;
     }
 
@@ -111,8 +128,30 @@ public class PullsAdapter extends RecyclerView.Adapter {
     }
 
     public void addPulls(ArrayList<DataOfPulls> list) {
+        Log.i(TAG, "add : " + list.size());
         pulls.addAll(list);
         notifyDataSetChanged();
+    }
+
+    public void add(DataOfPulls pull) {
+        this.pulls.add(pull);
+        notifyItemInserted(pulls.size() - 1);
+    }
+
+    public void deleteLoading() {
+        isLoading = false;
+        int position = this.pulls.size() - 1;
+        this.pulls.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void addLoading() {
+        isLoading = true;
+        add(new DataOfPulls());
+    }
+
+    public boolean isLoading() {
+        return isLoading;
     }
 
     private class ViewHolderPullItem extends RecyclerView.ViewHolder {
@@ -126,6 +165,13 @@ public class PullsAdapter extends RecyclerView.Adapter {
             title = itemView.findViewById(R.id.pull_title);
             header = itemView.findViewById(R.id.pull_header);
             icon = itemView.findViewById(R.id.image_pull);
+        }
+    }
+
+    private class VIewHolderPullLoader extends RecyclerView.ViewHolder {
+
+        public VIewHolderPullLoader(View itemView) {
+            super(itemView);
         }
     }
 }
