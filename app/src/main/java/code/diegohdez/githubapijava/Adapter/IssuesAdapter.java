@@ -168,8 +168,8 @@ public class IssuesAdapter extends RecyclerView.Adapter {
         add(new DataOfIssues());
     }
 
-    public int getIssuesSize() {
-        return this.issues.size();
+    public boolean isLoading() {
+        return isLoading;
     }
 
     private class ViewHolderItemIssue extends RecyclerView.ViewHolder {
