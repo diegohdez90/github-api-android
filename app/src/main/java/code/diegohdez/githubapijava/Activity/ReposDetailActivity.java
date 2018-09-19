@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -14,6 +13,7 @@ import code.diegohdez.githubapijava.Data.DataOfIssues;
 import code.diegohdez.githubapijava.Data.DataOfPulls;
 import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.Model.Issue;
+import code.diegohdez.githubapijava.Model.Pull;
 import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.R;
 import code.diegohdez.githubapijava.Utils.Constants.Fields;
@@ -94,6 +94,7 @@ public class ReposDetailActivity extends AppCompatActivity {
             @Override
             public void execute(Realm realm) {
                 repo.getIssues().deleteAllFromRealm();
+                repo.getPulls().deleteAllFromRealm();
             }
         });
         realm.close();
@@ -109,5 +110,10 @@ public class ReposDetailActivity extends AppCompatActivity {
     public void addIssues(RealmList<Issue> issues) {
         ArrayList<DataOfIssues> list = DataOfIssues.createList(issues);
         pageRepoAdapter.setIssues(list);
+    }
+
+    public void addPulls(RealmList<Pull> pulls) {
+        ArrayList<DataOfPulls> list= DataOfPulls.createList(pulls);
+        pageRepoAdapter.setPulls(list);
     }
 }
