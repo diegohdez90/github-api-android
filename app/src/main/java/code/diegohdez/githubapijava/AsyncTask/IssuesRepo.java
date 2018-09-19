@@ -2,6 +2,7 @@ package code.diegohdez.githubapijava.AsyncTask;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.androidnetworking.common.ANRequest;
@@ -12,21 +13,26 @@ import java.util.ArrayList;
 
 import code.diegohdez.githubapijava.Activity.ReposDetailActivity;
 import code.diegohdez.githubapijava.Model.Issue;
+import code.diegohdez.githubapijava.Model.Pull;
+import code.diegohdez.githubapijava.Model.PullInfo;
 import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.Utils.Constants.Fields;
 import code.diegohdez.githubapijava.Utils.Request.API;
 import io.realm.Realm;
 import io.realm.RealmList;
 
-public class IssuesRepo extends AsyncTask<String, Void, ANResponse>{
+import static code.diegohdez.githubapijava.Utils.Constants.API.CLOSED;
 
-    private static final String TAG = IssuesRepo.class.getSimpleName();
+public class IssuesRepo extends AsyncTask<String, Void, ANResponse> {
+
+    private static String TAG = IssuesRepo.class.getSimpleName();
 
     private Realm realm;
     private Context context;
     private long id;
+    private int page;
 
-    public IssuesRepo(ReposDetailActivity context, long id) {
+    public IssuesRepo(FragmentActivity context, long id) {
         this.context = context;
         this.id = id;
         realm = Realm.getDefaultInstance();
@@ -35,7 +41,7 @@ public class IssuesRepo extends AsyncTask<String, Void, ANResponse>{
     @Override
     protected ANResponse doInBackground(String... urls) {
         ANRequest request = API.getIssues(urls[0]);
-        return (ANResponse) request.executeForObjectList(Issue.class);
+        return request.executeForObjectList(Issue.class);
     }
 
     @Override
@@ -43,18 +49,26 @@ public class IssuesRepo extends AsyncTask<String, Void, ANResponse>{
         super.onPostExecute(response);
         if (response.isSuccess()) {
             if (realm.isClosed()) realm = Realm.getDefaultInstance();
-            final RealmList<Issue> list = toIssueList(realm, (ArrayList<Issue>) response.getResult());
+            final RealmList<Issue> list = toIssuesList((ArrayList<Issue>) response.getResult());
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     Repo repo = realm.where(Repo.class).equalTo(Fields.ID, id).findFirst();
+                    RealmList<Pull> pulls = repo.getPulls();
+                    for (Issue item : list) {
+                        Pull pull = pulls.where().equalTo(Fields.NUMBER, item.getNumber()).findFirst();
+                        if (pull != null) {
+                            PullInfo pullInfo = new PullInfo();
+                            pullInfo.setState(pull.getState());
+                            item.setPullInfo(pullInfo);
+                        }
+                    }
                     repo.getIssues().addAll(list);
                     realm.insertOrUpdate(repo);
                 }
             });
             realm.close();
-            Log.i(TAG, "create issues : " + id);
-            ((ReposDetailActivity) context).createIssuesAdapter(id);
+            ((ReposDetailActivity) context).addIssues(list);
         } else {
             ANError anError = response.getError();
             String message = "Delete: " + "\n" +
@@ -66,7 +80,7 @@ public class IssuesRepo extends AsyncTask<String, Void, ANResponse>{
         }
     }
 
-    private RealmList<Issue> toIssueList(Realm realm, ArrayList<Issue> list) {
+    private RealmList<Issue> toIssuesList(ArrayList<Issue> list) {
         RealmList<Issue> issues = new RealmList();
         for (Issue item: list) {
             Issue issue = new Issue();
@@ -79,9 +93,10 @@ public class IssuesRepo extends AsyncTask<String, Void, ANResponse>{
             if (item.getAssignee() != null) issue.setAssignee(item.getAssignee());
             issue.setCreatedAt(item.getCreatedAt());
             issue.setUpdatedAt(item.getUpdatedAt());
-            if (issue.getState().equals("closed")) issue.setClosedAt(item.getClosedAt());
+            if (issue.getState().equals(CLOSED)) issue.setClosedAt(item.getClosedAt());
             issues.add(issue);
         }
         return issues;
     }
+
 }
