@@ -53,14 +53,15 @@ public class BranchesAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolderBranchItem) {
-            DataOfBranches item = this.branches.get(position);
+            final DataOfBranches item = this.branches.get(position);
             ((ViewHolderBranchItem) holder).item.setText(item.getName());
             ((ViewHolderBranchItem) holder).root.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, CommitsActivity.class)
                             .putExtra(Intents.REPO_ID, id)
-                            .putExtra(Intents.REPO_NAME, repoName);
+                            .putExtra(Intents.REPO_NAME, repoName)
+                            .putExtra(Intents.BRANCH_NAME, item.getName());
                     context.startActivity(intent);
                 }
             });
