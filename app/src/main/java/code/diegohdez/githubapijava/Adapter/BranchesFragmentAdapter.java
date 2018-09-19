@@ -15,6 +15,9 @@ import code.diegohdez.githubapijava.R;
 
 public class BranchesFragmentAdapter extends android.support.v4.app.Fragment implements UpdateableBranchesFragment{
 
+    public static final String ARG_ID = "ID";
+    public static final String ARG_REPO_NAME = "REPO_NAME";
+
     BranchesAdapter adapter;
 
     @Nullable
@@ -24,7 +27,8 @@ public class BranchesFragmentAdapter extends android.support.v4.app.Fragment imp
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView recyclerView = root.findViewById(R.id.branches_list);
-        adapter = new BranchesAdapter();
+        Bundle args = getArguments();
+        adapter = new BranchesAdapter(args.getLong(ARG_ID), args.getString(ARG_REPO_NAME), getContext());
         recyclerView.setScrollbarFadingEnabled(true);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
