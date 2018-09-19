@@ -22,6 +22,8 @@ public class DataOfIssues {
     private boolean isPull;
     private String pullState;
 
+    public DataOfIssues() { }
+
     public DataOfIssues(IssuesBuilder builder) {
         this.id = builder.getId();
         this.title = builder.getTitle();
