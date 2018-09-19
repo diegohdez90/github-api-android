@@ -12,6 +12,7 @@ public class API {
     public static final String STAR_REPO = "/starred";
     public static final String FORK_REPO = "/forks";
     public static final String BRANCHES = "/branches";
+    public static final String COMMITS = "/commits";
 
     public static final String STATE_ALL = "?state=all";
 
