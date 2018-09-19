@@ -24,7 +24,8 @@
         <activity
             android:name=".Activity.ReposActivity"
             android:theme="@style/AppThemeCustom.NoActionBar" />
-        <activity android:name=".Activity.ReposDetailActivity"></activity>
+        <activity android:name=".Activity.ReposDetailActivity" />
+        <activity android:name=".Activity.CommitsActivity"></activity>
     </application>
 
 </manifest>
