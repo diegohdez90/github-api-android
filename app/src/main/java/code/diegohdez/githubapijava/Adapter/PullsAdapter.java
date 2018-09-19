@@ -107,7 +107,7 @@ public class PullsAdapter extends RecyclerView.Adapter {
             case CLOSED:
                 return "#" + number + " by " + user + " closed in " + dateFormat.format(closedAt);
             case MERGED:
-                return "#" + number + " by " + user + " closed in " + dateFormat.format(mergedAt);
+                return "#" + number + " by " + user + " merged in " + dateFormat.format(mergedAt);
                 default:
                     return "";
         }
