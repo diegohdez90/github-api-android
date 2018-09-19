@@ -106,4 +106,12 @@ public class API {
         if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
         return builder.build();
     }
+
+    public static ANRequest getCommits (String url ) {
+        ANRequest.GetRequestBuilder builder = AndroidNetworking
+                .get(url);
+        String token = AppManager.getOurInstance().getToken();
+        if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
+        return  builder.build();
+    }
 }
