@@ -12,11 +12,13 @@ import code.diegohdez.githubapijava.AsyncTask.DetailsRepo;
 import code.diegohdez.githubapijava.Data.DataOfIssues;
 import code.diegohdez.githubapijava.Data.DataOfPulls;
 import code.diegohdez.githubapijava.Manager.AppManager;
+import code.diegohdez.githubapijava.Model.Issue;
 import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.R;
 import code.diegohdez.githubapijava.Utils.Constants.Fields;
 import code.diegohdez.githubapijava.Utils.Constants.Intents;
 import io.realm.Realm;
+import io.realm.RealmList;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.STATE_ALL;
@@ -49,6 +51,8 @@ public class ReposDetailActivity extends AppCompatActivity {
         details.execute(BASE_URL + USER_REPOS + appManager.getAccount() + "/" + repoName + USER_PULLS + STATE_ALL,
                 BASE_URL + USER_REPOS + appManager.getAccount() + "/" +repoName + USER_ISSUES + STATE_ALL);
         pageRepoAdapter = new PageRepoAdapter(getSupportFragmentManager());
+        pageRepoAdapter.setId(repoId);
+        pageRepoAdapter.setRepoName(repoName);
         viewPager = findViewById(R.id.repo_pager_details);
         viewPager.setAdapter(pageRepoAdapter);
 
@@ -79,22 +83,15 @@ public class ReposDetailActivity extends AppCompatActivity {
         .setTabListener(tabListener));
     }
 
-    public void createIssuesAdapter(long id) {
-        Repo repo = realm.where(Repo.class).equalTo(Fields.ID, id).findFirst();
-        ArrayList<DataOfIssues> list = DataOfIssues.createList(repo.getIssues());
-        pageRepoAdapter.setIssues(list);
-    }
-
-    public void createPullsAdapter(long id) {
-        Repo repo = realm.where(Repo.class).equalTo(Fields.ID, id).findFirst();
-        ArrayList<DataOfPulls> list = DataOfPulls.createList(repo.getPulls());
-        pageRepoAdapter.setPulls(list);
-    }
-
     public void createAdapter(long id) {
         Repo repo = realm.where(Repo.class).equalTo(Fields.ID, id).findFirst();
         ArrayList<DataOfIssues> issues = DataOfIssues.createList(repo.getIssues());
         ArrayList<DataOfPulls> pulls = DataOfPulls.createList(repo.getPulls());
         pageRepoAdapter.setData(issues, pulls);
+    }
+
+    public void addIssues(RealmList<Issue> issues) {
+        ArrayList<DataOfIssues> list = DataOfIssues.createList(issues);
+        pageRepoAdapter.setIssues(list);
     }
 }
