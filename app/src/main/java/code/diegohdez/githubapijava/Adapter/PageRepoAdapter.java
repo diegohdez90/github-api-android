@@ -60,17 +60,17 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
             case 0:
                 fragment = new IssuesFragment();
                 fragment.setArguments(args);
-                return fragment;
+                break;
             case 1:
                 fragment = new PullsFragment();
                 fragment.setArguments(args);
-                return fragment;
+                break;
             case 2:
                 fragment = new BranchesFragment();
                 fragment.setArguments(args);
-                return fragment;
+                break;
         }
-        return new Fragment();
+        return fragment;
     }
 
     @Override
