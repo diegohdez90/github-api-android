@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 
+import code.diegohdez.githubapijava.Data.DataOfBranches;
 import code.diegohdez.githubapijava.Data.DataOfIssues;
 import code.diegohdez.githubapijava.Data.DataOfPulls;
 
@@ -22,6 +23,7 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<DataOfIssues> issues;
     private ArrayList<DataOfPulls> pulls;
+    private ArrayList<DataOfBranches> branches;
 
     @SuppressLint("SimpleDateFormat")
     public PageRepoAdapter(FragmentManager fm) {
@@ -39,9 +41,12 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-    public void setData(ArrayList<DataOfIssues> issues, ArrayList<DataOfPulls> pulls) {
+    public void setData(ArrayList<DataOfIssues> issues,
+                        ArrayList<DataOfPulls> pulls,
+                        ArrayList<DataOfBranches> branches) {
         this.issues = issues;
         this.pulls = pulls;
+        this.branches = branches;
         notifyDataSetChanged();
     }
 
@@ -60,6 +65,10 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
                 fragment = new PullsFragmentAdapter();
                 fragment.setArguments(args);
                 return fragment;
+            case 2:
+                fragment = new BranchesFragmentAdapter();
+                fragment.setArguments(args);
+                return fragment;
         }
         return new Fragment();
     }
@@ -70,13 +79,15 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
             ((IssuesFragmentAdapter) object).update(this.issues);
         } else if (object instanceof PullsFragmentAdapter) {
             ((PullsFragmentAdapter) object).update(this.pulls);
+        } else if (object instanceof BranchesFragmentAdapter) {
+            ((BranchesFragmentAdapter) object).update(this.branches);
         }
         return super.getItemPosition(object);
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Nullable
@@ -87,6 +98,8 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
                 return "Issues";
             case 1:
                 return "Pull Request";
+            case 2:
+                return "Branches";
         }
         return null;
     }
