@@ -24,8 +24,12 @@
         <activity
             android:name=".Activity.ReposActivity"
             android:theme="@style/AppThemeCustom.NoActionBar" />
-        <activity android:name=".Activity.ReposDetailActivity" />
-        <activity android:name=".Activity.CommitsActivity"></activity>
+        <activity
+            android:name=".Activity.ReposDetailActivity"
+            android:label="Repository Details"/>
+        <activity
+            android:name=".Activity.CommitsActivity"
+            android:label="Commits" />
     </application>
 
 </manifest>
