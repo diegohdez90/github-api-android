@@ -57,6 +57,7 @@ import static code.diegohdez.githubapijava.Utils.Constants.API.WATCH_REPO;
 import static code.diegohdez.githubapijava.Utils.Constants.Fields.LOGIN;
 import static code.diegohdez.githubapijava.Utils.Constants.Fields.OWNER_LOGIN;
 import static code.diegohdez.githubapijava.Utils.Constants.Fields.REPO_NAME;
+import static code.diegohdez.githubapijava.Utils.Constants.Numbers.PAGE_ONE;
 import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_MAIN_GET_TOKEN;
 import static code.diegohdez.githubapijava.Utils.Constants.Result.RESULT_OK_GET_TOKEN;
 
@@ -78,8 +79,8 @@ public class ReposActivity extends AppCompatActivity {
 
     private boolean isLoading = false;
     private boolean isLastPage = false;
-    private int page = 1;
-    private int TOTAL_PAGES = 1;
+    private int page = PAGE_ONE;
+    private int TOTAL_PAGES = PAGE_ONE;
     @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
