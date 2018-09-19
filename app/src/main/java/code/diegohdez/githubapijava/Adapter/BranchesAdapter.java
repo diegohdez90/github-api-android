@@ -1,6 +1,7 @@
 package code.diegohdez.githubapijava.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,8 +12,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import code.diegohdez.githubapijava.Activity.CommitsActivity;
 import code.diegohdez.githubapijava.Data.DataOfBranches;
 import code.diegohdez.githubapijava.R;
+import code.diegohdez.githubapijava.Utils.Constants.Intents;
 
 public class BranchesAdapter extends RecyclerView.Adapter {
 
@@ -21,9 +24,19 @@ public class BranchesAdapter extends RecyclerView.Adapter {
     private static final int ITEM = 0;
 
     private ArrayList<DataOfBranches> branches;
+    private long id;
+    private String repoName;
+    private Context context;
 
     public BranchesAdapter() {
         this.branches = new ArrayList<>();
+    }
+
+    public BranchesAdapter(long id, String repoName, Context context) {
+        this.branches = new ArrayList<>();
+        this.id = id;
+        this.repoName = repoName;
+        this.context = context;
     }
 
     @NonNull
@@ -38,10 +51,19 @@ public class BranchesAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolderBranchItem) {
             DataOfBranches item = this.branches.get(position);
             ((ViewHolderBranchItem) holder).item.setText(item.getName());
+            ((ViewHolderBranchItem) holder).root.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, CommitsActivity.class)
+                            .putExtra(Intents.REPO_ID, id)
+                            .putExtra(Intents.REPO_NAME, repoName);
+                    context.startActivity(intent);
+                }
+            });
         } else {
             Log.d(TAG, "no instance of view holder found");
         }
@@ -65,9 +87,11 @@ public class BranchesAdapter extends RecyclerView.Adapter {
     private class ViewHolderBranchItem extends RecyclerView.ViewHolder {
 
         TextView item;
+        View root;
 
         public ViewHolderBranchItem(View itemView) {
             super(itemView);
+            root = itemView;
             item = itemView.findViewById(R.id.branch_name);
         }
     }
