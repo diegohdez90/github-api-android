@@ -8,6 +8,7 @@ import io.realm.FieldAttribute;
 import io.realm.RealmMigration;
 import io.realm.RealmSchema;
 
+import static code.diegohdez.githubapijava.Utils.Constants.Schema.BRANCH_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.ISSUE_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.OWNER_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.PULL_INFO_SCHEMA;
@@ -104,6 +105,17 @@ public class Migration implements RealmMigration {
 
             schema.get(ISSUE_SCHEMA)
                     .addRealmObjectField(Fields.PULL_INFO, schema.get(PULL_INFO_SCHEMA));
+
+            oldVersion++;
+        }
+
+        if (oldVersion == 7) {
+            schema.create(BRANCH_SCHEMA)
+                    .addField(Fields.ID, String.class, FieldAttribute.PRIMARY_KEY)
+                    .addField(Fields.BRANCH_NAME, String.class);
+
+            schema.get(REPO_SCHEMA)
+                    .addRealmListField(Fields.BRANCHES, schema.get(BRANCH_SCHEMA));
 
             oldVersion++;
         }
