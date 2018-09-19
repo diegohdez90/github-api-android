@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import code.diegohdez.githubapijava.Adapter.PageRepoAdapter;
 import code.diegohdez.githubapijava.AsyncTask.DetailsRepo;
+import code.diegohdez.githubapijava.Data.DataOfBranches;
 import code.diegohdez.githubapijava.Data.DataOfIssues;
 import code.diegohdez.githubapijava.Data.DataOfPulls;
 import code.diegohdez.githubapijava.Manager.AppManager;
@@ -22,6 +23,7 @@ import io.realm.Realm;
 import io.realm.RealmList;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
+import static code.diegohdez.githubapijava.Utils.Constants.API.BRANCHES;
 import static code.diegohdez.githubapijava.Utils.Constants.API.STATE_ALL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER_ISSUES;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER_PULLS;
@@ -52,7 +54,8 @@ public class ReposDetailActivity extends AppCompatActivity {
         repoId = bundle.getLong(Intents.REPO_ID);
         DetailsRepo details = new DetailsRepo(this, repoId);
         details.execute(BASE_URL + USER_REPOS + appManager.getAccount() + "/" + repoName + USER_PULLS + STATE_ALL,
-                BASE_URL + USER_REPOS + appManager.getAccount() + "/" +repoName + USER_ISSUES + STATE_ALL);
+                BASE_URL + USER_REPOS + appManager.getAccount() + "/" +repoName + USER_ISSUES + STATE_ALL,
+                BASE_URL + USER_REPOS + appManager.getAccount() + "/" + repoName + BRANCHES);
         pageRepoAdapter = new PageRepoAdapter(getSupportFragmentManager());
         pageRepoAdapter.setId(repoId);
         pageRepoAdapter.setRepoName(repoName);
@@ -84,6 +87,9 @@ public class ReposDetailActivity extends AppCompatActivity {
         actionBar.addTab(actionBar.newTab()
         .setText("Pull Request")
         .setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab()
+        .setText("Branches")
+        .setTabListener(tabListener));
     }
 
     @Override
@@ -95,6 +101,7 @@ public class ReposDetailActivity extends AppCompatActivity {
             public void execute(Realm realm) {
                 repo.getIssues().deleteAllFromRealm();
                 repo.getPulls().deleteAllFromRealm();
+                repo.getBranches().deleteAllFromRealm();
             }
         });
         realm.close();
@@ -104,7 +111,8 @@ public class ReposDetailActivity extends AppCompatActivity {
         Repo repo = realm.where(Repo.class).equalTo(Fields.ID, id).findFirst();
         ArrayList<DataOfIssues> issues = DataOfIssues.createList(repo.getIssues());
         ArrayList<DataOfPulls> pulls = DataOfPulls.createList(repo.getPulls());
-        pageRepoAdapter.setData(issues, pulls);
+        ArrayList<DataOfBranches> branches = DataOfBranches.createList(repo.getBranches());
+        pageRepoAdapter.setData(issues, pulls, branches);
     }
 
     public void addIssues(RealmList<Issue> issues) {
