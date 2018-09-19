@@ -124,6 +124,7 @@ public class ReposActivity extends AppCompatActivity {
         RealmResults<Repo> repos = realm.where(Repo.class).equalTo(OWNER_LOGIN, account).findAll();
         ArrayList<DataOfRepos> list = DataOfRepos.createRepoList(repos);
         adapter = new ReposAdapter(list, account, this);
+        adapter.addLoading();
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new ReposPaginationScrollListener(layoutManager) {
             @Override
