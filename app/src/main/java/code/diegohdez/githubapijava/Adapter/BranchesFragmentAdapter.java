@@ -2,8 +2,10 @@ package code.diegohdez.githubapijava.Adapter;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import code.diegohdez.githubapijava.Data.DataOfBranches;
 import code.diegohdez.githubapijava.R;
 
-public class BranchesFragmentAdapter extends android.support.v4.app.Fragment implements UpdateableBranchesFragment{
+public class BranchesFragmentAdapter extends Fragment implements UpdateableBranchesFragment{
 
     public static final String ARG_ID = "ID";
     public static final String ARG_REPO_NAME = "REPO_NAME";
@@ -28,7 +30,7 @@ public class BranchesFragmentAdapter extends android.support.v4.app.Fragment imp
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView recyclerView = root.findViewById(R.id.branches_list);
         Bundle args = getArguments();
-        adapter = new BranchesAdapter(args.getLong(ARG_ID), args.getString(ARG_REPO_NAME), getContext());
+        adapter = new BranchesAdapter(args.getLong(ARG_ID), args.getString(ARG_REPO_NAME), inflater.getContext());
         recyclerView.setScrollbarFadingEnabled(true);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
