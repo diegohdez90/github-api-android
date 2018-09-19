@@ -3,6 +3,7 @@ package code.diegohdez.githubapijava.Adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +24,26 @@ import static code.diegohdez.githubapijava.Utils.Constants.API.OPEN;
 
 public class IssuesAdapter extends RecyclerView.Adapter {
 
-    private static int ITEM = 0;
+    private static final String TAG = IssuesAdapter.class.getSimpleName();
+
+    private static int ITEM = 1;
+    private static int LOADER = 2;
 
     SimpleDateFormat dateFormat;
     private ArrayList<DataOfIssues> issues;
+    private boolean isLoading;
 
     public IssuesAdapter() {
-        issues = new ArrayList<>();
-        dateFormat = new SimpleDateFormat(DATE_REPO_FORMAT);
+        this.issues = new ArrayList<>();
+        this.dateFormat = new SimpleDateFormat(DATE_REPO_FORMAT);
+        this.isLoading = false;
     }
 
 
     public IssuesAdapter (ArrayList<DataOfIssues> issues) {
         this.issues = issues;
-        dateFormat = new SimpleDateFormat(DATE_REPO_FORMAT);
+        this.dateFormat = new SimpleDateFormat(DATE_REPO_FORMAT);
+        this.isLoading = false;
     }
 
     @NonNull
@@ -47,6 +54,9 @@ public class IssuesAdapter extends RecyclerView.Adapter {
         if (viewType == ITEM) {
             View item = inflater.inflate(R.layout.item_issue, parent, false);
             return new ViewHolderItemIssue(item);
+        } else if (viewType == LOADER){
+            View loader = inflater.inflate(R.layout.issue_loader, parent, false);
+            return new ViewHolderLoaderIssue(loader);
         } else
             throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
     }
@@ -69,6 +79,12 @@ public class IssuesAdapter extends RecyclerView.Adapter {
                     issue.isPull(),
                     issue.getPullState(),
                     issue.getState()));
+        } else if (holder instanceof ViewHolderLoaderIssue) {
+            /*
+            Nothing
+             */
+        } else {
+            Log.d(TAG, "no instance of view holder found");
         }
     }
 
@@ -79,7 +95,8 @@ public class IssuesAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        return ITEM;
+        if (position == this.issues.size() - 1 && isLoading) return LOADER;
+        else return ITEM;
     }
 
     private String getHeader(boolean isPull,
@@ -134,6 +151,27 @@ public class IssuesAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public void add(DataOfIssues issue) {
+        this.issues.add(issue);
+        notifyItemInserted(issues.size() - 1);
+    }
+
+    public void deleteLoading() {
+        isLoading = false;
+        int position = this.issues.size() - 1;
+        this.issues.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void addLoading() {
+        isLoading = true;
+        add(new DataOfIssues());
+    }
+
+    public int getIssuesSize() {
+        return this.issues.size();
+    }
+
     private class ViewHolderItemIssue extends RecyclerView.ViewHolder {
 
         TextView title;
@@ -144,6 +182,13 @@ public class IssuesAdapter extends RecyclerView.Adapter {
             title = itemView.findViewById(R.id.issue_title);
             header = itemView.findViewById(R.id.issue_header);
             icon = itemView.findViewById(R.id.image_issue);
+        }
+    }
+
+    private class ViewHolderLoaderIssue extends RecyclerView.ViewHolder {
+
+        ViewHolderLoaderIssue(View itemView) {
+            super(itemView);
         }
     }
 }
