@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,8 @@ public class ReposDetailActivity extends AppCompatActivity {
     private Realm realm;
     private AppManager appManager;
 
+    private long repoId;
+
     PageRepoAdapter pageRepoAdapter;
     ViewPager viewPager;
 
@@ -46,7 +49,7 @@ public class ReposDetailActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         String repoName = bundle.getString(Intents.REPO_NAME);
-        long repoId = bundle.getLong(Intents.REPO_ID);
+        repoId = bundle.getLong(Intents.REPO_ID);
         DetailsRepo details = new DetailsRepo(this, repoId);
         details.execute(BASE_URL + USER_REPOS + appManager.getAccount() + "/" + repoName + USER_PULLS + STATE_ALL,
                 BASE_URL + USER_REPOS + appManager.getAccount() + "/" +repoName + USER_ISSUES + STATE_ALL);
@@ -81,6 +84,19 @@ public class ReposDetailActivity extends AppCompatActivity {
         actionBar.addTab(actionBar.newTab()
         .setText("Pull Request")
         .setTabListener(tabListener));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        final Repo repo = realm.where(Repo.class).equalTo(Fields.ID, repoId).findFirst();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                repo.getIssues().deleteAllFromRealm();
+            }
+        });
+        realm.close();
     }
 
     public void createAdapter(long id) {
