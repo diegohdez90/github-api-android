@@ -26,7 +26,7 @@
             android:theme="@style/AppThemeCustom.NoActionBar" />
         <activity
             android:name=".Activity.ReposDetailActivity"
-            android:label="Repository Details"/>
+            android:label="Repository Details" />
         <activity
             android:name=".Activity.CommitsActivity"
             android:label="Commits" />
