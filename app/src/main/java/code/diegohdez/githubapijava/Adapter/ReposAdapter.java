@@ -26,10 +26,12 @@ import java.util.List;
 
 import code.diegohdez.githubapijava.Activity.ReposActivity;
 import code.diegohdez.githubapijava.Activity.ReposDetailActivity;
+import code.diegohdez.githubapijava.BuildConfig;
 import code.diegohdez.githubapijava.Data.DataOfRepos;
 import code.diegohdez.githubapijava.Manager.AppManager;
 import code.diegohdez.githubapijava.R;
 import code.diegohdez.githubapijava.Utils.Constants.Intents;
+import code.diegohdez.navbottom.githubapijava.Activity.ReposDetailsActivity;
 import okhttp3.Response;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.ACCEPT;
@@ -82,11 +84,15 @@ public class ReposAdapter extends RecyclerView.Adapter {
             final DataOfRepos repo = repos.get(position);
             ((ViewHolderItemRepo) holder).root.setTag(holder);
             ((ViewHolderItemRepo) holder).root.setOnClickListener(new View.OnClickListener(){
-
+                Intent intent = null;
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, ReposDetailActivity.class)
-                            .putExtra(Intents.REPO_ID, repo.getId())
+                    if (BuildConfig.FLAVOR == "navBottom") {
+                        intent = new Intent(context, ReposDetailsActivity.class);
+                    } else {
+                        intent = new Intent(context, ReposDetailActivity.class);
+                    }
+                    intent.putExtra(Intents.REPO_ID, repo.getId())
                             .putExtra(Intents.REPO_NAME, repo.getName());
                     context.startActivity(intent);
                 }
