@@ -65,10 +65,6 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
                 fragment = new PullsFragment();
                 fragment.setArguments(args);
                 break;
-            case 2:
-                fragment = new BranchesFragment();
-                fragment.setArguments(args);
-                break;
         }
         return fragment;
     }
@@ -79,15 +75,13 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
             ((IssuesFragment) object).update(this.issues);
         } else if (object instanceof PullsFragment) {
             ((PullsFragment) object).update(this.pulls);
-        } else if (object instanceof BranchesFragment) {
-            ((BranchesFragment) object).update(this.branches);
         }
         return super.getItemPosition(object);
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
     @Nullable
@@ -98,8 +92,6 @@ public class PageRepoAdapter extends FragmentStatePagerAdapter {
                 return "Issues";
             case 1:
                 return "Pull Request";
-            case 2:
-                return "Branches";
         }
         return null;
     }

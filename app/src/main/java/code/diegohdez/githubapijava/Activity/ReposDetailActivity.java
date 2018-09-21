@@ -87,9 +87,6 @@ public class ReposDetailActivity extends AppCompatActivity {
         actionBar.addTab(actionBar.newTab()
         .setText("Pull Request")
         .setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab()
-        .setText("Branches")
-        .setTabListener(tabListener));
     }
 
     @Override
