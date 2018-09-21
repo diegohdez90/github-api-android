@@ -16,6 +16,7 @@ import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.R;
 import code.diegohdez.githubapijava.Utils.Constants.Fields;
 import code.diegohdez.githubapijava.Utils.Constants.Intents;
+import code.diegohdez.navbottom.githubapijava.Adapter.BranchesFragment;
 import code.diegohdez.navbottom.githubapijava.Adapter.IssuesFragment;
 import code.diegohdez.navbottom.githubapijava.Adapter.PullsFragment;
 import io.realm.Realm;
@@ -70,6 +71,7 @@ public class ReposDetailsActivity extends AppCompatActivity {
                         fragment = PullsFragment.newInstance();
                         break;
                     case R.id.branches_menu:
+                        fragment = BranchesFragment.newInstance();
                         break;
                 }
                 if (fragment != null) {
@@ -107,6 +109,7 @@ public class ReposDetailsActivity extends AppCompatActivity {
             public void execute(Realm realm) {
                 repo.getIssues().deleteAllFromRealm();
                 repo.getPulls().deleteAllFromRealm();
+                repo.getBranches().deleteAllFromRealm();
             }
         });
         realm.close();
