@@ -7,10 +7,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -70,6 +70,10 @@ public class IssuesFragment extends Fragment {
                 isLoading = true;
                 page++;
                 IssuesRepo issuesRepo = new IssuesRepo(fragment, args.getLong(ARG_ID));
+                Toast.makeText(
+                        getActivity(),
+                        "Display " + page + " page",
+                        Toast.LENGTH_SHORT).show();
                 issuesRepo.execute(BASE_URL + USER_REPOS + AppManager.getOurInstance().getAccount() + "/" + args.getString(ARG_REPO_NAME) + USER_ISSUES + STATE_ALL + "&page=" + page);
                 AppManager.getOurInstance().setIssuesPage(page);
             }
@@ -92,17 +96,16 @@ public class IssuesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         page = AppManager.getOurInstance().getCurrentIssuesPage();
-        Log.i(IssuesFragment.class.getSimpleName(), "Return to issues : " + page);
     }
 
     public void setIssuesList() {
         Realm realm = Realm.getDefaultInstance();
         Repo repo = realm.where(Repo.class).equalTo(Fields.ID, args.getLong(ARG_ID)).findFirst();
         RealmList<Issue> issues = repo != null ? repo.getIssues() : new RealmList<Issue>();
-        realm.close();
         ArrayList<DataOfIssues> list = DataOfIssues.createList(issues);
         this.adapter.addIssues(list);
         adapter.addLoading();
+        realm.close();
     }
 
     public void addIssues(RealmList<Issue> issues) {
