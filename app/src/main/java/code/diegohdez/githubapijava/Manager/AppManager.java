@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import static code.diegohdez.githubapijava.Utils.Constants.Numbers.PAGE_ONE;
+
 public class AppManager {
     private static AppManager ourInstance;
 
@@ -24,6 +26,8 @@ public class AppManager {
     private int issuesPage;
     private final String PULLS_PAGE = "PULLS_PAGE";
     private int pullsPage;
+    private final String BRANCHES_PAGE = "BRANCHES_PAGE";
+    private int branchesPage;
 
     public void setAccount (String account) {
         this.account = account;
@@ -33,7 +37,6 @@ public class AppManager {
 
     public String getAccount() {
         return account;
-
     }
 
     public void setToken (String token) {
@@ -54,6 +57,12 @@ public class AppManager {
         editor.commit();
     }
 
+    public void setBranchesPage(int branchesPage) {
+        this.branchesPage = branchesPage;
+        editor.putInt(BRANCHES_PAGE, branchesPage);
+        editor.commit();
+    }
+
     public String getToken() {
         return token;
     }
@@ -70,6 +79,8 @@ public class AppManager {
 
     public int getCurrentPullsPage() { return pullsPage; }
 
+    public int getCurrentBranchPage() { return  branchesPage; }
+
     public static void init (Context context) {
         ourInstance = new AppManager(context.getApplicationContext());
     }
@@ -79,14 +90,15 @@ public class AppManager {
         editor = prefs.edit();
         account = prefs.getString(ACCOUNT, "");
         token = prefs.getString(TOKEN, "");
-        currentPage = prefs.getInt(CURRENT_PAGE, 1);
+        currentPage = prefs.getInt(CURRENT_PAGE, PAGE_ONE);
 
-        /**
-         * For NavBottom
+        /*
+          For NavBottom
          */
 
-        issuesPage = prefs.getInt(ISSUES_PAGE, 1);
-        pullsPage = prefs.getInt(PULLS_PAGE, 1);
+        issuesPage = prefs.getInt(ISSUES_PAGE, PAGE_ONE);
+        pullsPage = prefs.getInt(PULLS_PAGE, PAGE_ONE);
+        branchesPage = prefs.getInt(BRANCHES_PAGE, PAGE_ONE);
     }
 
     public void resetAccount () {
@@ -96,6 +108,7 @@ public class AppManager {
     public void resetRepoDetailsPage() {
         setIssuesPage(1);
         setPullsPage(1);
+        setBranchesPage(1);
     }
 
     public void initPager () { setCurrentPage(1); }
