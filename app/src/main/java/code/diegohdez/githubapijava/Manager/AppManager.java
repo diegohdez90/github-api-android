@@ -22,6 +22,8 @@ public class AppManager {
     private int currentPage;
     private final String ISSUES_PAGE = "ISSUES_PAGE";
     private int issuesPage;
+    private final String PULLS_PAGE = "PULLS_PAGE";
+    private int pullsPage;
 
     public void setAccount (String account) {
         this.account = account;
@@ -46,6 +48,12 @@ public class AppManager {
         editor.commit();
     }
 
+    public void setPullsPage(int pullsPage) {
+        this.pullsPage = pullsPage;
+        editor.putInt(PULLS_PAGE, pullsPage);
+        editor.commit();
+    }
+
     public String getToken() {
         return token;
     }
@@ -59,6 +67,8 @@ public class AppManager {
     }
 
     public int getCurrentIssuesPage() { return issuesPage; }
+
+    public int getCurrentPullsPage() { return pullsPage; }
 
     public static void init (Context context) {
         ourInstance = new AppManager(context.getApplicationContext());
@@ -75,7 +85,8 @@ public class AppManager {
          * For NavBottom
          */
 
-        issuesPage = prefs.getInt(ISSUES_PAGE, 0);
+        issuesPage = prefs.getInt(ISSUES_PAGE, 1);
+        pullsPage = prefs.getInt(PULLS_PAGE, 1);
     }
 
     public void resetAccount () {
@@ -84,6 +95,7 @@ public class AppManager {
 
     public void resetRepoDetailsPage() {
         setIssuesPage(1);
+        setPullsPage(1);
     }
 
     public void initPager () { setCurrentPage(1); }
