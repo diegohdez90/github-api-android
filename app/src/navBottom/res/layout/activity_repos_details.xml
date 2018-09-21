@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="code.diegohdez.navbottom.githubapijava.Activity.ReposDetailsActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/frame_repo_details"
+        android:animateLayoutChanges="true">
+        <ProgressBar
+            android:id="@+id/issues_init_loader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+    <android.support.design.widget.BottomNavigationView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/repo_details_nav_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        app:menu="@menu/repo_details"
+        tools:context="code.diegohdez.navbottom.githubapijava.Activity.ReposDetailsActivity">
+
+    </android.support.design.widget.BottomNavigationView>
+</LinearLayout>
