@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import code.diegohdez.githubapijava.AsyncTask.DetailsRepo;
 import code.diegohdez.githubapijava.Manager.AppManager;
@@ -18,6 +17,7 @@ import code.diegohdez.githubapijava.R;
 import code.diegohdez.githubapijava.Utils.Constants.Fields;
 import code.diegohdez.githubapijava.Utils.Constants.Intents;
 import code.diegohdez.navbottom.githubapijava.Adapter.IssuesFragment;
+import code.diegohdez.navbottom.githubapijava.Adapter.PullsFragment;
 import io.realm.Realm;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
@@ -67,6 +67,7 @@ public class ReposDetailsActivity extends AppCompatActivity {
                         fragment = code.diegohdez.navbottom.githubapijava.Adapter.IssuesFragment.newInstance();
                         break;
                     case R.id.pulls_menu:
+                        fragment = PullsFragment.newInstance();
                         break;
                     case R.id.branches_menu:
                         break;
@@ -99,16 +100,13 @@ public class ReposDetailsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(
-                getApplicationContext(),
-                "Destroy",
-                Toast.LENGTH_SHORT).show();
         Realm realm = Realm.getDefaultInstance();
         final Repo repo = realm.where(Repo.class).equalTo(Fields.ID, repoId).findFirst();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 repo.getIssues().deleteAllFromRealm();
+                repo.getPulls().deleteAllFromRealm();
             }
         });
         realm.close();
