@@ -29,7 +29,7 @@ import io.realm.RealmList;
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
 import static code.diegohdez.githubapijava.Utils.Constants.API.PAGE_SIZE;
 import static code.diegohdez.githubapijava.Utils.Constants.API.STATE_ALL;
-import static code.diegohdez.githubapijava.Utils.Constants.API.USER_ISSUES;
+import static code.diegohdez.githubapijava.Utils.Constants.API.USER_PULLS;
 import static code.diegohdez.githubapijava.Utils.Constants.API.USER_REPOS;
 import static code.diegohdez.githubapijava.Utils.Constants.Numbers.PAGE_ONE;
 
@@ -74,7 +74,7 @@ public class PullsFragment extends Fragment {
                         "Display " + page + " page",
                         Toast.LENGTH_SHORT).show();
                 PullsRepo issuesRepo = new PullsRepo(fragment, args.getLong(ARG_ID));
-                issuesRepo.execute(BASE_URL + USER_REPOS + AppManager.getOurInstance().getAccount() + "/" +args.getString(ARG_REPO_NAME) + USER_ISSUES + STATE_ALL + "&page=" + page);
+                issuesRepo.execute(BASE_URL + USER_REPOS + AppManager.getOurInstance().getAccount() + "/" +args.getString(ARG_REPO_NAME) + USER_PULLS + STATE_ALL + "&page=" + page);
             }
 
             @Override
