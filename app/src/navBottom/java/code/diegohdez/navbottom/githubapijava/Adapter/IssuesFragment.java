@@ -84,7 +84,7 @@ public class IssuesFragment extends Fragment {
                 return isLoading;
             }
         });
-        getIssuesList();
+        setIssuesList();
         return root;
     }
 
@@ -95,10 +95,11 @@ public class IssuesFragment extends Fragment {
         Log.i(IssuesFragment.class.getSimpleName(), "Return to issues : " + page);
     }
 
-    public void getIssuesList() {
+    public void setIssuesList() {
         Realm realm = Realm.getDefaultInstance();
         Repo repo = realm.where(Repo.class).equalTo(Fields.ID, args.getLong(ARG_ID)).findFirst();
         RealmList<Issue> issues = repo != null ? repo.getIssues() : new RealmList<Issue>();
+        realm.close();
         ArrayList<DataOfIssues> list = DataOfIssues.createList(issues);
         this.adapter.addIssues(list);
         adapter.addLoading();
