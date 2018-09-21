@@ -13,9 +13,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import code.diegohdez.githubapijava.Activity.CommitsActivity;
+import code.diegohdez.githubapijava.BuildConfig;
 import code.diegohdez.githubapijava.Data.DataOfBranches;
 import code.diegohdez.githubapijava.R;
 import code.diegohdez.githubapijava.Utils.Constants.Intents;
+import code.diegohdez.navbottom.githubapijava.Adapter.BranchesFragment;
 
 public class BranchesAdapter extends RecyclerView.Adapter {
 
@@ -23,10 +25,12 @@ public class BranchesAdapter extends RecyclerView.Adapter {
 
     private static final int ITEM = 0;
 
+    private boolean isLoading;
     private ArrayList<DataOfBranches> branches;
     private long id;
     private String repoName;
     private Context context;
+    private BranchesFragment fragment;
 
     public BranchesAdapter() {
         this.branches = new ArrayList<>();
@@ -37,6 +41,14 @@ public class BranchesAdapter extends RecyclerView.Adapter {
         this.id = id;
         this.repoName = repoName;
         this.context = context;
+    }
+
+    public BranchesAdapter(long id, String repoName, BranchesFragment fragment) {
+        this.branches = new ArrayList<>();
+        this.id = id;
+        this.repoName = repoName;
+        this.fragment = fragment;
+        this.isLoading = false;
     }
 
     @NonNull
@@ -58,11 +70,17 @@ public class BranchesAdapter extends RecyclerView.Adapter {
             ((ViewHolderBranchItem) holder).root.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, CommitsActivity.class)
-                            .putExtra(Intents.REPO_ID, id)
+                    Intent intent = null;
+                    if (BuildConfig.FLAVOR.equals("navBottom")) intent = new Intent(fragment.getContext(), CommitsActivity.class);
+                    else intent = new Intent(context, CommitsActivity.class);
+                    intent.putExtra(Intents.REPO_ID, id)
                             .putExtra(Intents.REPO_NAME, repoName)
                             .putExtra(Intents.BRANCH_NAME, item.getName());
-                    context.startActivity(intent);
+                    if (BuildConfig.FLAVOR.equals("navBottom")) {
+                        fragment.startActivity(intent);
+                    } else {
+                        context.startActivity(intent);
+                    }
                 }
             });
         } else {
@@ -83,6 +101,23 @@ public class BranchesAdapter extends RecyclerView.Adapter {
     public void addBranches(ArrayList<DataOfBranches> branches) {
         this.branches.addAll(branches);
         notifyDataSetChanged();
+    }
+
+    public void add(DataOfBranches branch) {
+        this.branches.add(branch);
+        notifyItemInserted(branches.size() - 1);
+    }
+
+    public void deleteLoading() {
+        isLoading = false;
+        int position = this.branches.size() - 1;
+        this.branches.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void addLoading() {
+        isLoading = true;
+        add(new DataOfBranches());
     }
 
     private class ViewHolderBranchItem extends RecyclerView.ViewHolder {
