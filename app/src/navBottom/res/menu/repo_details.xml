@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/issues_menu"
+        android:title="Issues"
+        android:icon="@drawable/issues_menu"/>
+    <item
+        android:id="@+id/pulls_menu"
+        android:title="Pulls Requests"
+        android:icon="@drawable/pull_menu"/>
+    <item
+        android:id="@+id/branches_menu"
+        android:title="Branches"
+        android:icon="@drawable/branch_menu"/>
+</menu>
