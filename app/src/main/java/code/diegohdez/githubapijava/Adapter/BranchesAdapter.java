@@ -24,6 +24,7 @@ public class BranchesAdapter extends RecyclerView.Adapter {
     private static final String TAG = BranchesAdapter.class.getSimpleName();
 
     private static final int ITEM = 0;
+    private static final int LOADER = 1;
 
     private boolean isLoading;
     private ArrayList<DataOfBranches> branches;
@@ -59,6 +60,9 @@ public class BranchesAdapter extends RecyclerView.Adapter {
         if (viewType == ITEM) {
             View item = inflater.inflate(R.layout.item_branch, parent, false);
             return new ViewHolderBranchItem(item);
+        } else if (viewType == LOADER) {
+            View loader = inflater.inflate(R.layout.branch_loader, parent, false);
+            return new ViewHolderBranchLoader(loader);
         } else throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
     }
 
@@ -67,11 +71,12 @@ public class BranchesAdapter extends RecyclerView.Adapter {
         if (holder instanceof ViewHolderBranchItem) {
             final DataOfBranches item = this.branches.get(position);
             ((ViewHolderBranchItem) holder).item.setText(item.getName());
-            ((ViewHolderBranchItem) holder).root.setOnClickListener(new View.OnClickListener(){
+            ((ViewHolderBranchItem) holder).root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = null;
-                    if (BuildConfig.FLAVOR.equals("navBottom")) intent = new Intent(fragment.getContext(), CommitsActivity.class);
+                    if (BuildConfig.FLAVOR.equals("navBottom"))
+                        intent = new Intent(fragment.getContext(), CommitsActivity.class);
                     else intent = new Intent(context, CommitsActivity.class);
                     intent.putExtra(Intents.REPO_ID, id)
                             .putExtra(Intents.REPO_NAME, repoName)
@@ -83,6 +88,8 @@ public class BranchesAdapter extends RecyclerView.Adapter {
                     }
                 }
             });
+        } else if (holder instanceof ViewHolderBranchLoader) {
+            // Nothing to do
         } else {
             Log.d(TAG, "no instance of view holder found");
         }
@@ -95,7 +102,8 @@ public class BranchesAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        return ITEM;
+        if (position == this.branches.size() - 1 && isLoading) return LOADER;
+        else return ITEM;
     }
 
     public void addBranches(ArrayList<DataOfBranches> branches) {
@@ -129,6 +137,12 @@ public class BranchesAdapter extends RecyclerView.Adapter {
             super(itemView);
             root = itemView;
             item = itemView.findViewById(R.id.branch_name);
+        }
+    }
+
+    private class ViewHolderBranchLoader extends RecyclerView.ViewHolder {
+        public ViewHolderBranchLoader(View itemView) {
+            super(itemView);
         }
     }
 }
