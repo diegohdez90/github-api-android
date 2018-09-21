@@ -47,17 +47,16 @@ public class CommitsBranch extends AsyncTask<String, Void, ANResponse> {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    realm.beginTransaction();
-                    realm.where(Repo.class)
+                    Repo repo = realm.where(Repo.class)
                             .equalTo(Fields.ID, id)
-                            .findFirst()
-                            .getBranches()
+                            .findFirst();
+                    repo.getBranches()
                             .where()
                             .equalTo(Fields.BRANCH_NAME, branch)
                             .findFirst()
                             .getCommits()
                             .addAll(list);
-                    realm.commitTransaction();
+                    realm.insertOrUpdate(repo);
                 }
             });
             ((CommitsActivity) context).addCommits(list);
