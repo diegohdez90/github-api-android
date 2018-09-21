@@ -11,6 +11,7 @@ import com.androidnetworking.error.ANError;
 import java.util.ArrayList;
 
 import code.diegohdez.githubapijava.Activity.ReposDetailActivity;
+import code.diegohdez.githubapijava.BuildConfig;
 import code.diegohdez.githubapijava.Model.Branch;
 import code.diegohdez.githubapijava.Model.Issue;
 import code.diegohdez.githubapijava.Model.Pull;
@@ -18,6 +19,7 @@ import code.diegohdez.githubapijava.Model.PullInfo;
 import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.Utils.Constants.Fields;
 import code.diegohdez.githubapijava.Utils.Request.API;
+import code.diegohdez.navbottom.githubapijava.Activity.ReposDetailsActivity;
 import io.realm.Realm;
 import io.realm.RealmList;
 
@@ -32,6 +34,12 @@ public class DetailsRepo extends AsyncTask<String, Void, ANResponse[]> {
     private long id;
 
     public DetailsRepo(ReposDetailActivity context, long id) {
+        this.context = context;
+        this.id = id;
+        realm = Realm.getDefaultInstance();
+    }
+
+    public DetailsRepo(ReposDetailsActivity context, long id) {
         this.context = context;
         this.id = id;
         realm = Realm.getDefaultInstance();
@@ -126,7 +134,8 @@ public class DetailsRepo extends AsyncTask<String, Void, ANResponse[]> {
             Log.e(TAG, message);
         }
         realm.close();
-        ((ReposDetailActivity) context).createAdapter(id);
+        if (BuildConfig.FLAVOR.equals("navBottom")) ((ReposDetailsActivity) context).createFragment();
+        else ((ReposDetailActivity) context).createAdapter(id);
     }
 
     public RealmList<Issue> toIssuesList(ArrayList<Issue> list) {

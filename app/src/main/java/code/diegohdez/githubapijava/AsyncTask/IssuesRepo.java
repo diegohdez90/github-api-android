@@ -12,12 +12,14 @@ import com.androidnetworking.error.ANError;
 import java.util.ArrayList;
 
 import code.diegohdez.githubapijava.Activity.ReposDetailActivity;
+import code.diegohdez.githubapijava.BuildConfig;
 import code.diegohdez.githubapijava.Model.Issue;
 import code.diegohdez.githubapijava.Model.Pull;
 import code.diegohdez.githubapijava.Model.PullInfo;
 import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.Utils.Constants.Fields;
 import code.diegohdez.githubapijava.Utils.Request.API;
+import code.diegohdez.navbottom.githubapijava.Adapter.IssuesFragment;
 import io.realm.Realm;
 import io.realm.RealmList;
 
@@ -29,6 +31,7 @@ public class IssuesRepo extends AsyncTask<String, Void, ANResponse> {
 
     private Realm realm;
     private Context context;
+    private IssuesFragment fragment;
     private long id;
     private int page;
 
@@ -36,6 +39,12 @@ public class IssuesRepo extends AsyncTask<String, Void, ANResponse> {
         this.context = context;
         this.id = id;
         realm = Realm.getDefaultInstance();
+    }
+
+    public IssuesRepo(IssuesFragment context, long id) {
+        this.fragment = context;
+        this.id = id;
+        this.realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -68,7 +77,8 @@ public class IssuesRepo extends AsyncTask<String, Void, ANResponse> {
                 }
             });
             realm.close();
-            ((ReposDetailActivity) context).addIssues(list);
+            if (BuildConfig.FLAVOR == "navBottom") ((IssuesFragment) fragment).addIssues(list);
+            else ((ReposDetailActivity) context).addIssues(list);
         } else {
             ANError anError = response.getError();
             String message = "Delete: " + "\n" +
