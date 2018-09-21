@@ -10,10 +10,12 @@ import com.androidnetworking.common.ANResponse;
 import java.util.ArrayList;
 
 import code.diegohdez.githubapijava.Activity.ReposDetailActivity;
+import code.diegohdez.githubapijava.BuildConfig;
 import code.diegohdez.githubapijava.Model.Pull;
 import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.Utils.Constants.Fields;
 import code.diegohdez.githubapijava.Utils.Request.API;
+import code.diegohdez.navbottom.githubapijava.Adapter.PullsFragment;
 import io.realm.Realm;
 import io.realm.RealmList;
 
@@ -25,10 +27,17 @@ public class PullsRepo extends AsyncTask<String, Void, ANResponse> {
 
     private Realm realm;
     private Context context;
+    private PullsFragment fragment;
     private long id;
 
     public PullsRepo (FragmentActivity context, long id) {
         this.context = context;
+        this.id = id;
+        this.realm = Realm.getDefaultInstance();
+    }
+
+    public PullsRepo (PullsFragment context, long id) {
+        this.fragment = context;
         this.id = id;
         this.realm = Realm.getDefaultInstance();
     }
@@ -57,7 +66,8 @@ public class PullsRepo extends AsyncTask<String, Void, ANResponse> {
                     realm.insertOrUpdate(repo);
                 }
             });
-            ((ReposDetailActivity) context).addPulls(pulls);
+            if (BuildConfig.FLAVOR.equals("navBottom")) fragment.addPulls(pulls);
+            else ((ReposDetailActivity) context).addPulls(pulls);
         }
     }
 
