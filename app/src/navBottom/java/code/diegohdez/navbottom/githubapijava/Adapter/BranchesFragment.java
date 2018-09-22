@@ -90,7 +90,6 @@ public class BranchesFragment extends Fragment {
         RealmList<Branch> branches = repo != null ? repo.getBranches() : new RealmList<Branch>();
         ArrayList<DataOfBranches> list = DataOfBranches.createList(branches);
         this.adapter.addBranches(list);
-        adapter.addLoading();
         realm.close();
     }
 
