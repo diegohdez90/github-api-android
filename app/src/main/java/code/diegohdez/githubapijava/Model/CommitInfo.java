@@ -1,8 +1,5 @@
 package code.diegohdez.githubapijava.Model;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.util.Date;
 import java.util.UUID;
 
 import io.realm.RealmObject;
@@ -13,14 +10,13 @@ public class CommitInfo extends RealmObject {
     @PrimaryKey
     private String id = UUID.randomUUID().toString();
     private String message;
-    @SerializedName("author.date")
-    private Date date;
+    private DateCommit author;
 
     public CommitInfo () {}
 
-    public CommitInfo (String message, Date date) {
+    public CommitInfo (String message, DateCommit date) {
         this.message = message;
-        this.date = date;
+        this.author = date;
     }
 
     public String getId() {
@@ -35,11 +31,11 @@ public class CommitInfo extends RealmObject {
         return message;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setAuthor(DateCommit author) {
+        this.author = author;
     }
 
-    public Date getDate() {
-        return date;
+    public DateCommit getAuthor() {
+        return author;
     }
 }
