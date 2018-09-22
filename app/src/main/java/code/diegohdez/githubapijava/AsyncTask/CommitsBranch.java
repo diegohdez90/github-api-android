@@ -24,17 +24,27 @@ public class CommitsBranch extends AsyncTask<String, Void, ANResponse> {
     private String branch;
     private Realm realm;
     private Context context;
+    private int page;
 
     public CommitsBranch(CommitsActivity context, long id, String branch) {
         this.context = context;
         this.id = id;
         this.branch = branch;
         realm = Realm.getDefaultInstance();
+        this.page = 1;
+    }
+
+    public CommitsBranch(CommitsActivity context, long id, String branch, int page) {
+        this.context = context;
+        this.id = id;
+        this.branch = branch;
+        realm = Realm.getDefaultInstance();
+        this.page = page;
     }
 
     @Override
     protected ANResponse doInBackground(String... urls) {
-        ANRequest request = API.getCommits(urls[0]);
+        ANRequest request =  (page > 1) ? API.getCommits(urls[0] + "&page=" + page) :  API.getCommits(urls[0]);
         return request.executeForObjectList(Commit.class);
     }
 
@@ -59,7 +69,8 @@ public class CommitsBranch extends AsyncTask<String, Void, ANResponse> {
                     realm.insertOrUpdate(repo);
                 }
             });
-            ((CommitsActivity) context).addCommits(list);
+            if (page > 1) ((CommitsActivity) context).addCommits(list);
+            else ((CommitsActivity) context).setCommits(list);
         }
     }
 
