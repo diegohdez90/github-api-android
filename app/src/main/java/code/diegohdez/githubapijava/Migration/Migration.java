@@ -8,9 +8,11 @@ import io.realm.FieldAttribute;
 import io.realm.RealmMigration;
 import io.realm.RealmSchema;
 
+import static code.diegohdez.githubapijava.Utils.Constants.Schema.AUTHOR_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.BRANCH_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.COMMIT_INFO_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.COMMIT_SCHEMA;
+import static code.diegohdez.githubapijava.Utils.Constants.Schema.DATE_COMMIT_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.ISSUE_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.OWNER_SCHEMA;
 import static code.diegohdez.githubapijava.Utils.Constants.Schema.PULL_INFO_SCHEMA;
@@ -136,6 +138,36 @@ public class Migration implements RealmMigration {
 
             schema.get(BRANCH_SCHEMA)
                     .addRealmListField(Fields.COMMITS, schema.get(COMMIT_SCHEMA));
+
+            oldVersion++;
+        }
+
+        if (oldVersion == 9) {
+            schema.get(COMMIT_SCHEMA)
+                    .addField("_new_author_commit", String.class)
+                    .removeField(Fields.AUTHOR)
+                    .renameField("_new_author_commit", "author");
+            oldVersion++;
+        }
+
+        if (oldVersion == 10) {
+            schema.create(AUTHOR_SCHEMA)
+                    .addField(Fields.ID, long.class, FieldAttribute.PRIMARY_KEY)
+                    .addField(Fields.LOGIN, String.class);
+
+            schema.create(DATE_COMMIT_SCHEMA)
+                    .addField(Fields.ID, String.class, FieldAttribute.PRIMARY_KEY)
+                    .addField(Fields.AUTHOR_NAME, String.class)
+                    .addField(Fields.DATE, Date.class);
+
+            schema.get(COMMIT_SCHEMA)
+                    .addRealmObjectField("_new_author_commit", schema.get(AUTHOR_SCHEMA))
+                    .removeField(Fields.AUTHOR)
+                    .renameField("_new_author_commit", Fields.AUTHOR);
+
+            schema.get(COMMIT_INFO_SCHEMA)
+                    .addRealmObjectField(Fields.AUTHOR, schema.get(DATE_COMMIT_SCHEMA))
+                    .removeField(Fields.DATE);
 
             oldVersion++;
         }
