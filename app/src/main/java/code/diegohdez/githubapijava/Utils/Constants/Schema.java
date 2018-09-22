@@ -9,4 +9,6 @@ public class Schema {
     public static final String BRANCH_SCHEMA = "Branch";
     public static final String COMMIT_SCHEMA = "Commit";
     public static final String COMMIT_INFO_SCHEMA = "CommitInfo";
+    public static final String AUTHOR_SCHEMA = "Author";
+    public static final String DATE_COMMIT_SCHEMA = "DateCommit";
 }

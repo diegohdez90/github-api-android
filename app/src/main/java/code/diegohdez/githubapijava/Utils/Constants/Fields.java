@@ -39,4 +39,5 @@ public class Fields {
     public static final String MESSAGE = "message";
     public static final String DATE = "date";
     public static final String COMMIT_INFO = "commitInfo";
+    public static final String AUTHOR_NAME = "name";
 }
