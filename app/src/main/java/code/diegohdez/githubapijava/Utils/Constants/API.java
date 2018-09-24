@@ -15,6 +15,9 @@ public class API {
     public static final String COMMITS = "/commits";
 
     public static final String STATE_ALL = "?state=all";
+    public static final String STATE_OPEN ="?state=open";
+    public static final String STATE_CLOSED = "?state=closed";
+    public static final String AND_PAGE = "&page=";
 
     public static final String AUTHORIZATION = "Authorization";
     public static final String ACCEPT = "Accept";
@@ -45,7 +48,7 @@ public class API {
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static final String DATE_REPO_FORMAT = "MMMM dd',' yyyy";
 
-    public static final String getRepos(String username) {
+    public static String getRepos(String username) {
         return BASE_URL + USERS + username + REPOS;
     }
 }
