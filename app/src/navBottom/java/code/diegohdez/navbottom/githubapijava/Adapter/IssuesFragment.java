@@ -120,11 +120,9 @@ public class IssuesFragment extends Fragment {
                     }
                 });
                 if (isChecked) {
-                    Log.i(TAG, "checked for open issues");
                     state = STATE_OPEN;
                     if (closed.isChecked()) state = STATE_ALL;
                 } else {
-                    Log.i(TAG, "unchecked for closed issues");
                     if (closed.isChecked()) state = STATE_CLOSED;
                     else state = STATE_ALL;
                 }
