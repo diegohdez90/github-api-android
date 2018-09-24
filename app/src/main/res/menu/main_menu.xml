@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/login_main"
+        android:title="Login"
+        android:icon="@drawable/baseline_account_circle_24"
+        app:showAsAction="collapseActionView|ifRoom"
+        />
+    <item
+        android:id="@+id/logout_main"
+        android:title="Log Out"
+        android:icon="@drawable/baseline_exit_to_app_24"
+        app:showAsAction="collapseActionView|ifRoom"
+        />
+</menu>
