@@ -146,6 +146,11 @@ public class IssuesAdapter extends RecyclerView.Adapter {
         return -1;
     }
 
+    public void clear () {
+        this.issues = new ArrayList<>();
+        notifyDataSetChanged();
+    }
+
     public void addIssues(ArrayList<DataOfIssues> issues) {
         this.issues.addAll(issues);
         notifyDataSetChanged();
