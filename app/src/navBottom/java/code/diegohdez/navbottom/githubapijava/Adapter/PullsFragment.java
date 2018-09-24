@@ -103,7 +103,7 @@ public class PullsFragment extends Fragment {
         RealmList<Pull> pulls = repo != null ? repo.getPulls() : new RealmList<Pull>();
         ArrayList<DataOfPulls> list = DataOfPulls.createList(pulls);
         this.adapter.addPulls(list);
-        adapter.addLoading();
+        if (list.size() == PAGE_SIZE) adapter.addLoading();
         realm.close();
     }
 

@@ -104,7 +104,7 @@ public class IssuesFragment extends Fragment {
         RealmList<Issue> issues = repo != null ? repo.getIssues() : new RealmList<Issue>();
         ArrayList<DataOfIssues> list = DataOfIssues.createList(issues);
         this.adapter.addIssues(list);
-        adapter.addLoading();
+        if (list.size() == PAGE_SIZE) adapter.addLoading();
         realm.close();
     }
 
