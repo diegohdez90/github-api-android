@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <activity android:name="code.diegohdez.navbottom.githubapijava.Activity.ReposDetailsActivity"></activity>
+        <activity
+            android:name="code.diegohdez.navbottom.githubapijava.Activity.ReposDetailsActivity"
+            android:label="Repository Details"
+            android:theme="@style/AppThemeCustom.NoActionBar" />
     </application>
 </manifest>
