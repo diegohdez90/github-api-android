@@ -1,12 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:layout_height="match_parent" >
+    <ProgressBar
+        android:id="@+id/loading_selected_checkbox_pulls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+    <LinearLayout
+        android:id="@+id/group_checkbox_pulls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <CheckBox
+            android:id="@+id/open"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:buttonTint="@color/primaryLightColor"
+            android:text="Open" />
+        <CheckBox
+            android:id="@+id/closed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:buttonTint="@color/primaryLightColor"
+            android:text="Closed" />
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/pulls_list"
+        android:layout_below="@id/group_checkbox_pulls"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-</LinearLayout>
+</RelativeLayout>
