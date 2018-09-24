@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class IssuesFragment extends Fragment implements UpdateableIssuesFragment
 
     RecyclerView recyclerView;
     IssuesAdapter adapter;
+    LinearLayout layout_checkboxes;
 
     int page = PAGE_ONE;
     boolean isLoading = false;
@@ -45,7 +47,7 @@ public class IssuesFragment extends Fragment implements UpdateableIssuesFragment
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.issues_fragment, container, false);
-
+        layout_checkboxes.setVisibility(View.GONE);
         final Bundle args = getArguments();
         recyclerView = root.findViewById(R.id.issues_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
