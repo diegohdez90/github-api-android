@@ -89,8 +89,6 @@ public class PullsAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        Log.i(TAG, "position : " + position);
-        Log.i(TAG, "size : " + this.pulls.size());
         if (position == this.pulls.size() - 1 && isLoading) return LOADER;
         return ITEM;
     }
@@ -127,8 +125,12 @@ public class PullsAdapter extends RecyclerView.Adapter {
 
     }
 
+    public void clear() {
+        this.pulls = new ArrayList<>();
+        notifyDataSetChanged();
+    }
+
     public void addPulls(ArrayList<DataOfPulls> list) {
-        Log.i(TAG, "add : " + list.size());
         pulls.addAll(list);
         notifyDataSetChanged();
     }
