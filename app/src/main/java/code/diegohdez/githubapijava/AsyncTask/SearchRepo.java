@@ -59,7 +59,6 @@ public class SearchRepo extends AsyncTask<String, Void, ANResponse> {
                     .parse(response
                             .getResult().toString())
                     .getAsJsonObject();
-            Log.i(TAG, "result" + result.toString());
             RealmList<Repo> repos = toReposList(result.getAsJsonArray("items"));
             long total_repos = result.get("total_count").getAsLong();
             if (realm.isClosed()) realm = Realm.getDefaultInstance();
@@ -85,7 +84,6 @@ public class SearchRepo extends AsyncTask<String, Void, ANResponse> {
     }
 
     private RealmList<Repo> toReposList(JsonArray items) {
-        Log.i(TAG, "items size : " + items.size());
         RealmList<Repo> repos = new RealmList<>();
         Gson gson = new Gson();
         for (int i = 0; i < items.size(); i++){
