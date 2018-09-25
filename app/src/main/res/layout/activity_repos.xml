@@ -26,6 +26,11 @@
         android:layout_height="match_parent" >
         <include
             layout="@layout/repos_list" />
+        <ProgressBar
+            android:id="@+id/loading_repos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
     </FrameLayout>
 
 </LinearLayout>
