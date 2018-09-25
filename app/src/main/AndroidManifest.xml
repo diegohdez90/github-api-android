@@ -20,16 +20,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.GetTokenActivity" />
+        <activity
+            android:name=".Activity.GetTokenActivity"
+            android:label="Please provide credentails" />
         <activity
             android:name=".Activity.ReposActivity"
-            android:theme="@style/AppThemeCustom.NoActionBar" />
+            android:label="Repos Account"
+            android:theme="@style/AppThemeCustom.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Activity.ReposDetailActivity"
-            android:label="Repository Details" />
+            android:label="Repository Details"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Activity.CommitsActivity"
-            android:label="Commits" />
+            android:label="Commits"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
