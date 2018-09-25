@@ -34,6 +34,14 @@ public class API {
         return builder.build();
     }
 
+    public static ANRequest searchInRepo(String url) {
+        ANRequest.GetRequestBuilder builder = AndroidNetworking
+                .get(url);
+        String token = AppManager.getOurInstance().getToken();
+        if (token.length() > 0) builder.addHeaders(AUTHORIZATION, token);
+        return builder.build();
+    }
+
     public static ANRequest onRepoEvenListener (String url) {
         ANRequest.GetRequestBuilder builder = AndroidNetworking
                 .get(url);
