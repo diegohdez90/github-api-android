@@ -19,6 +19,8 @@ import code.diegohdez.githubapijava.Model.Repo;
 import code.diegohdez.githubapijava.Utils.Request.API;
 import io.realm.Realm;
 
+import static code.diegohdez.githubapijava.Utils.Constants.Numbers.PAGE_ONE;
+
 public class Repos extends AsyncTask<String, Void, ANResponse[]> {
 
     public static final String TAG = Repos.class.getSimpleName();
@@ -118,9 +120,9 @@ public class Repos extends AsyncTask<String, Void, ANResponse[]> {
                 MainActivity.successRepos(context, message, status);
                 break;
             case "ReposActivity":
-
                 ReposActivity activity = (ReposActivity) context;
-                activity.successLoader(list);
+                if (page > PAGE_ONE)activity.successLoader(list);
+                else activity.initList(list);
                 break;
         }
     }
