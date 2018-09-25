@@ -13,6 +13,12 @@ public class API {
     public static final String FORK_REPO = "/forks";
     public static final String BRANCHES = "/branches";
     public static final String COMMITS = "/commits";
+    public static final String SEARCH = "search/";
+    public static final String REPOSITORIES = "repositories";
+    public static final String QUERY = "?q=";
+    public static final String EQUAL = "=";
+    public static final String PLUS = "+";
+    public static final String COLON = ":";
 
     public static final String STATE_ALL = "?state=all";
     public static final String STATE_OPEN ="?state=open";
