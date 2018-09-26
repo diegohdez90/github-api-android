@@ -47,7 +47,9 @@ public class Repos extends AsyncTask<String, Void, ANResponse[]> {
 
     @Override
     protected ANResponse[] doInBackground(String... urls) {
-        ANRequest[] request = new ANRequest[2];
+        ANRequest[] request;
+        if (urls.length > 1 ) request = new ANRequest[2];
+        else request = new ANRequest[1];
         request[0] = API.getRepos(urls[0], page);
         ANResponse user = null;
         ANResponse repos = (ANResponse<List<Repo>>) request[0].executeForObjectList(Repo.class);
@@ -55,7 +57,9 @@ public class Repos extends AsyncTask<String, Void, ANResponse[]> {
             request[1] = API.getAccount(urls[1]);
             user = (ANResponse<Owner>) request[1].executeForObject(Owner.class);
         }
-        ANResponse[] results = new ANResponse[2];
+        ANResponse[] results;
+        if (urls.length > 1 ) results = new ANResponse[2];
+        else  results = new ANResponse[1];
         results[0] = repos;
         if (urls.length > 1) results[1] = user;
         return results;
@@ -92,7 +96,7 @@ public class Repos extends AsyncTask<String, Void, ANResponse[]> {
                     "Code: " + anError.getErrorCode();
             status = anError.getErrorCode();
         }
-        if (response[1] != null) {
+        if (response.length > 1) {
             ANResponse user = response[1];
             if (user.isSuccess()) {
                 final Owner owner = (Owner) user.getResult();
