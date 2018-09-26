@@ -13,13 +13,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +30,7 @@ import code.diegohdez.githubapijava.Adapter.ReposAdapter;
 import code.diegohdez.githubapijava.AsyncTask.ForkRepo;
 import code.diegohdez.githubapijava.AsyncTask.RepoInfo;
 import code.diegohdez.githubapijava.AsyncTask.Repos;
+import code.diegohdez.githubapijava.AsyncTask.SearchRepo;
 import code.diegohdez.githubapijava.AsyncTask.StarRepo;
 import code.diegohdez.githubapijava.AsyncTask.WatchRepo;
 import code.diegohdez.githubapijava.Data.DataOfRepos;
@@ -41,11 +42,17 @@ import code.diegohdez.githubapijava.ScrollListener.ReposPaginationScrollListener
 import code.diegohdez.githubapijava.Utils.Constants.API;
 import code.diegohdez.githubapijava.Utils.Constants.Dialog;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 import static code.diegohdez.githubapijava.Utils.Constants.API.BASE_URL;
+import static code.diegohdez.githubapijava.Utils.Constants.API.COLON;
 import static code.diegohdez.githubapijava.Utils.Constants.API.FORK_REPO;
 import static code.diegohdez.githubapijava.Utils.Constants.API.PAGE_SIZE;
+import static code.diegohdez.githubapijava.Utils.Constants.API.PLUS;
+import static code.diegohdez.githubapijava.Utils.Constants.API.QUERY;
+import static code.diegohdez.githubapijava.Utils.Constants.API.REPOSITORIES;
+import static code.diegohdez.githubapijava.Utils.Constants.API.SEARCH;
 import static code.diegohdez.githubapijava.Utils.Constants.API.STAR;
 import static code.diegohdez.githubapijava.Utils.Constants.API.STAR_REPO;
 import static code.diegohdez.githubapijava.Utils.Constants.API.UN_STAR;
@@ -81,6 +88,13 @@ public class ReposActivity extends AppCompatActivity {
     private boolean isLastPage = false;
     private int page = PAGE_ONE;
     private int TOTAL_PAGES = PAGE_ONE;
+
+    private long total_repos = 0;
+    private ProgressBar loadReposBar;
+    private boolean searchRepos = false;
+    private boolean searchInAccount = false;
+    private String queryTextEdit = "";
+
     @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +130,9 @@ public class ReposActivity extends AppCompatActivity {
         Owner owner = realm.where(Owner.class).equalTo(LOGIN, account).findFirst();
         if (owner != null) {
             TOTAL_PAGES = (owner.getRepos() > 0) ? (int) Math.ceil((double) owner.getRepos() / PAGE_SIZE) : 0;
+            total_repos = owner.getRepos();
         }
+        loadReposBar = findViewById(R.id.loading_repos);
         RecyclerView recyclerView = findViewById(R.id.reposList);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
@@ -125,8 +141,9 @@ public class ReposActivity extends AppCompatActivity {
         RealmResults<Repo> repos = realm.where(Repo.class).equalTo(OWNER_LOGIN, account).findAll();
         ArrayList<DataOfRepos> list = DataOfRepos.createRepoList(repos);
         adapter = new ReposAdapter(list, account, this);
-        adapter.addLoading();
+        if (list.size() == PAGE_SIZE) adapter.addLoading();
         recyclerView.setAdapter(adapter);
+        loadReposBar.setVisibility(View.GONE);
         recyclerView.addOnScrollListener(new ReposPaginationScrollListener(layoutManager) {
             @Override
             protected void loadRepos() {
@@ -137,8 +154,13 @@ public class ReposActivity extends AppCompatActivity {
                         getApplicationContext(),
                         "Get repos for page: " + page,
                         Toast.LENGTH_SHORT).show();
-                Repos repos = new Repos(ReposActivity.this, page);
-                repos.execute(API.getRepos(account));
+                if (searchRepos) {
+                    SearchRepo searchRepo = new SearchRepo(ReposActivity.this, page);
+                    searchRepo.execute(BASE_URL + SEARCH + REPOSITORIES + QUERY + queryTextEdit + PLUS + USER + COLON + account);
+                } else {
+                    Repos repos = new Repos(ReposActivity.this, page);
+                    repos.execute(API.getRepos(account));
+                }
             }
 
             @Override
@@ -199,21 +221,64 @@ public class ReposActivity extends AppCompatActivity {
         inflater.inflate(R.menu.repos_menu, menu);
 
         MenuItem menuItemSearch = menu.findItem(R.id.search_repos);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItemSearch);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItemSearch);
+        searchView.setQueryHint("Search in " + account);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
+                if (!searchRepos) {
+                    loadReposBar.setVisibility(View.VISIBLE);
+                    searchInAccount = true;
+                    searchRepos = true;
+                    queryTextEdit = query;
+                    if (realm.isClosed()) realm = Realm.getDefaultInstance();
+                    final RealmResults<Repo> result = realm.where(Repo.class).equalTo(OWNER_LOGIN, account).findAll();
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            result.deleteAllFromRealm();
+                        }
+                    });
+                    isLoading = false;
+                    isLastPage = false;
+                    page = 1;
+                    AppManager.getOurInstance().setCurrentPage(page);
+                    adapter.clear();
+                    SearchRepo searchRepo = new SearchRepo(ReposActivity.this);
+                    searchRepo.execute(BASE_URL + SEARCH + REPOSITORIES + QUERY + queryTextEdit + PLUS + USER + COLON + account);
+                    realm.close();
+                }
                 return true;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                Log.i(TAG, "change: " + newText);
-                return true;
+            public boolean onQueryTextChange(String text) {
+                if (searchRepos && !text.equals(queryTextEdit)) {
+                    searchRepos = false;
+                }
+                if (searchInAccount && text.length() == 0) {
+                    loadReposBar.setVisibility(View.VISIBLE);
+                    searchRepos = false;
+                    if (realm.isClosed()) realm = Realm.getDefaultInstance();
+                    final RealmResults<Repo> result = realm.where(Repo.class).equalTo(OWNER_LOGIN, account).findAll();
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            result.deleteAllFromRealm();
+                        }
+                    });
+                    isLoading = false;
+                    isLastPage = false;
+                    page = 1;
+                    AppManager.getOurInstance().setCurrentPage(page);
+                    adapter.clear();
+                    Repos repos = new Repos(ReposActivity.this, page);
+                    repos.execute(API.getRepos(account));
+                    return false;
+                }
+                return false;
             }
         });
-
         if (AppManager.getOurInstance().getToken().length() > 0) menu.findItem(R.id.login_from_repos).setVisible(false);
         else menu.findItem(R.id.logout_from_repos).setVisible(false);
         return true;
@@ -369,5 +434,35 @@ public class ReposActivity extends AppCompatActivity {
         starTextView.setText(Long.toString(repo.getStars()));
         TextView forkTextView = viewRepoDetailsModal.findViewById(R.id.forks);
         forkTextView.setText(Long.toString(repo.getForks()));
+    }
+
+    public void initSearch(RealmList<Repo> repos, long total_repos) {
+        Toast.makeText(getApplicationContext(),
+                "We found " + total_repos + " repos",
+                Toast.LENGTH_SHORT).show();
+        TOTAL_PAGES = (total_repos > 0) ? (int) Math.ceil((double) total_repos / PAGE_SIZE) : 0;
+        ArrayList<DataOfRepos> list = DataOfRepos.createRepoList(repos);
+        adapter.addAll(list);
+        loadReposBar.setVisibility(View.GONE);
+        if (page <= TOTAL_PAGES) adapter.addLoading();
+        else isLastPage = true;
+    }
+
+    public void addSearch(RealmList<Repo> repos) {
+        adapter.deleteLoading();
+        isLoading = false;
+        List<DataOfRepos> list = DataOfRepos.createRepoList(repos);
+        adapter.addAll(list);
+        if (page <= TOTAL_PAGES) adapter.addLoading();
+        else isLastPage = true;
+    }
+
+    public void initList(List<Repo> repos) {
+        TOTAL_PAGES =  (int) Math.ceil((double) total_repos / PAGE_SIZE);
+        ArrayList<DataOfRepos> list = DataOfRepos.createRepoList(repos);
+        adapter.addAll(list);
+        loadReposBar.setVisibility(View.GONE);
+        if (page <= TOTAL_PAGES) adapter.addLoading();
+        else isLastPage = true;
     }
 }
