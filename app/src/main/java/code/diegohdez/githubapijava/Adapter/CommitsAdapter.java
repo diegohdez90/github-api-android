@@ -68,7 +68,7 @@ public class CommitsAdapter extends RecyclerView.Adapter {
     private String parseTitle(String title) {
         return (title.length() > 50) ?
                 (
-                        (title.indexOf("\n") > -1) ? title.split("\n")[0] : title.substring(0, 50)
+                        (title.indexOf("\n") > -1) ? title.split("\n")[0] : title.substring(0, 50) + "..."
                 ) : ((title.indexOf("\n") > -1) ? title.split("\n")[0] : title);
     }
 
