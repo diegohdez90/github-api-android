@@ -52,10 +52,6 @@ public class CommitsAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolderCommitItem) {
             DataOfCommits commit = commits.get(position);
-            Log.d(TAG, "size : " + commits.size());
-            Log.d(TAG, "onBindViewHolder: " + position);
-            Log.d(TAG, "author " + commit.getAuthor());
-            Log.d(TAG, "message " + commit.getMessage());
             ((ViewHolderCommitItem) holder).title.setText(parseTitle(commit.getMessage()));
             ((ViewHolderCommitItem) holder).description.setText(setDescription(commit.getAuthor(), commit.getDate()));
         } else if (holder instanceof ViewHolderCommitLoader){
@@ -66,10 +62,9 @@ public class CommitsAdapter extends RecyclerView.Adapter {
     }
 
     private String parseTitle(String title) {
-        return (title.length() > 50) ?
-                (
-                        (title.indexOf("\n") > -1) ? title.split("\n")[0] : title.substring(0, 50) + "..."
-                ) : ((title.indexOf("\n") > -1) ? title.split("\n")[0] : title);
+        return (title.length() > 50)
+                ? ((title.indexOf("\n") > -1) ? title.split("\n")[0] : title.substring(0, 50) + "...")
+                : ((title.indexOf("\n") > -1) ? title.split("\n")[0] : title);
     }
 
     private String setDescription(String author, Date date) {
