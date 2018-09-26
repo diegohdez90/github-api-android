@@ -42,7 +42,6 @@ public class GetToken extends AsyncTask<String, Void, ANResponse> {
         String message = "";
         int code;
         if (response.isSuccess()) {
-            Log.d(TAG, response.toString());
             Response anResponse = response.getOkHttpResponse();
             code = anResponse.code();
             if (code == AUTH_SUCCESS) {

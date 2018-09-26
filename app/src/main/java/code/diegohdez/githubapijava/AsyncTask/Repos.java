@@ -104,7 +104,6 @@ public class Repos extends AsyncTask<String, Void, ANResponse[]> {
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        Log.i(TAG, "Update account");
                         realm.insertOrUpdate(owner);
                     }
                 });

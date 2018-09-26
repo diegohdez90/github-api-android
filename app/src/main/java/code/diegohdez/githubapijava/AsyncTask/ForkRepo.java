@@ -33,7 +33,6 @@ public class ForkRepo extends AsyncTask<String, Void, ANResponse> {
     protected void onPostExecute(ANResponse response) {
         super.onPostExecute(response);
         if (response.isSuccess()) {
-            Log.i(TAG, "fork repo: " + response.getOkHttpResponse().code());
             if (response.getOkHttpResponse().code() == FORK_REPO_SUCCESS) ((ReposActivity) context).displayMessage("Fork success", name);
         } else {
             ANError anError = response.getError();

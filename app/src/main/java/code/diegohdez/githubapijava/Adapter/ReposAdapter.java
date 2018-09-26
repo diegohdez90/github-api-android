@@ -108,8 +108,6 @@ public class ReposAdapter extends RecyclerView.Adapter {
                             repo.getWatchers(),
                             repo.getStars(),
                             repo.getForks());
-                    Log.i(TAG, BASE_URL + USER_REPOS + account + "/" + repo.getName() + WATCH_REPO);
-                    Log.i(TAG, BASE_URL + USER + STAR_REPO + "/" + account + "/" + repo.getName());
                     ANRequest.GetRequestBuilder getWatcher = AndroidNetworking
                             .get(BASE_URL + USER_REPOS + account + "/" + repo.getName() + WATCH_REPO);
                     ANRequest.GetRequestBuilder getStar = AndroidNetworking
